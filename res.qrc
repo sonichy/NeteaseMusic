@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon.jpg</file>
+        <file>minimize.svg</file>
+        <file>maximize.svg</file>
+        <file>close.svg</file>
+        <file>icont.svg</file>
+        <file>icon.svg</file>
+        <file>play.svg</file>
+        <file>next.svg</file>
+        <file>last.svg</file>
+        <file>volume.svg</file>
+        <file>menu.svg</file>
+        <file>music.svg</file>
+        <file>friend.svg</file>
+        <file>video.svg</file>
+        <file>radio.svg</file>
+        <file>cloud.svg</file>
+        <file>download.svg</file>
+        <file>music1.svg</file>
+        <file>radio1.svg</file>
+        <file>man.svg</file>
+        <file>heart.svg</file>
+        <file>songlist.svg</file>
+        <file>playlist.svg</file>
+        <file>lyric.svg</file>
+        <file>looplist.svg</file>
+        <file>search.svg</file>
+    </qresource>
+</RCC>
