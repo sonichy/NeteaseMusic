@@ -15,7 +15,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
-#include <QTableWidgetItem>
+#include <QHeaderView>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -52,8 +53,17 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget = new QStackedWidget;
     stackedWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     stackedWidget->addWidget(toplistWidget);
-    QTableWidget *tableWidget_playlist = new QTableWidget;
+    tableWidget_playlist = new QTableWidget;
+    tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
+    tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget_playlist->setColumnCount(5);
+    QStringList header;
+    header << "歌名" << "歌手" << "专辑" << "时长";
+    tableWidget_playlist->setHorizontalHeaderLabels(header);
+    tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section{background:#232326;}");
+    tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section{background:#232326;}");
+    tableWidget_playlist->setStyleSheet("color:white; selection-background-color:#e6e6e6;");
     stackedWidget->addWidget(tableWidget_playlist);
     hbox->addWidget(stackedWidget);
     vbox->addLayout(hbox);
@@ -132,10 +142,14 @@ void MainWindow::createPlaylist(long id)
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QJsonArray tracks = json.object().value("result").toObject().value("tracks").toArray();
     //qDebug() << tracks;
-    //tableWidget_playlist->setRowCount(0);
+    tableWidget_playlist->clearContents();
     for(int i=0; i<tracks.size(); i++){
         tableWidget_playlist->insertRow(i);
         tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
-        //qDebug() << i << tracks[i].toObject().value("name").toString();
-    }
+        tableWidget_playlist->setItem(i,1,new QTableWidgetItem(tracks[i].toObject().value("artists").toArray()[0].toObject().value("name").toString()));
+        tableWidget_playlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
+        int ds = (int) tracks[i].toObject().value("duration").toDouble()/1000;
+        tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
+    }    
+    tableWidget_playlist->resizeColumnsToContents();
 }
