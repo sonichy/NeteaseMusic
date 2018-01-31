@@ -1,8 +1,5 @@
 #include "controlbar.h"
 #include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
-#include <QSlider>
 
 ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 {
@@ -14,7 +11,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     //setFixedHeight(50);
     QHBoxLayout *hbox = new QHBoxLayout;
 
-    QPushButton *pushButton_last = new QPushButton;
+    pushButton_last = new QPushButton;
     pushButton_last->setFixedSize(48,48);
     pushButton_last->setIcon(QIcon(":/last.svg"));
     pushButton_last->setIconSize(QSize(35,35));
@@ -22,15 +19,16 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_last->setFlat(true);
     hbox->addWidget(pushButton_last);
 
-    QPushButton *pushButton_play = new QPushButton;
+    pushButton_play = new QPushButton;
     pushButton_play->setFixedSize(48,48);
     pushButton_play->setIcon(QIcon(":/play.svg"));
     pushButton_play->setIconSize(QSize(42,42));
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
+    connect(pushButton_play,SIGNAL(pressed()),this,SLOT(emitPlayPause()));
     hbox->addWidget(pushButton_play);
 
-    QPushButton *pushButton_next = new QPushButton;
+    pushButton_next = new QPushButton;
     pushButton_next->setFixedSize(48,48);
     pushButton_next->setIcon(QIcon(":/next.svg"));
     pushButton_next->setIconSize(QSize(35,35));
@@ -38,18 +36,19 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_next->setFlat(true);
     hbox->addWidget(pushButton_next);
 
-    QLabel *label_song_timeNow = new QLabel;
+    label_song_timeNow = new QLabel;
     label_song_timeNow->setText("00:00");
     label_song_timeNow->setStyleSheet("color:white;");
     hbox->addWidget(label_song_timeNow);
 
-    QSlider *slider_progress = new QSlider;
+    slider_progress = new QSlider;
+    slider_progress->setRange(0,1000);
     slider_progress->setOrientation(Qt::Horizontal);
     slider_progress->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     slider_progress->setFocusPolicy(Qt::NoFocus);
     hbox->addWidget(slider_progress);
 
-    QLabel *label_song_duration = new QLabel;
+    label_song_duration = new QLabel;
     label_song_duration->setText("00:00");
     label_song_duration->setStyleSheet("color:white;");
     hbox->addWidget(label_song_duration);
@@ -62,7 +61,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_mute->setFlat(true);
     hbox->addWidget(pushButton_mute);
 
-    QSlider *slider_volume = new QSlider;
+    slider_volume = new QSlider;
     slider_volume->setOrientation(Qt::Horizontal);
     slider_volume->setRange(0,100);
     slider_volume->setValue(100);
@@ -95,4 +94,9 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     hbox->addWidget(pushButton_playlist);
 
     setLayout(hbox);
+}
+
+void ControlBar::emitPlayPause()
+{
+    emit playPause();
 }

@@ -1,7 +1,7 @@
 #include "navwidget.h"
-#include <QListWidget>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QDebug>
 
 NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 {    
@@ -11,49 +11,51 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
                   "QListWidget::item:selected { background-color:#333333; }");
     setFixedWidth(200);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-    QVBoxLayout *vbox = new QVBoxLayout;
-    QLabel *label = new QLabel;
-    label->setText("推荐");
-    vbox->addWidget(label);
-    QListWidget *listWidget_recommend = new QListWidget;
-    QListWidgetItem *LWI1,*LWI2,*LWI3,*LWI4,*LWI5,*LWI6;
-    LWI1 = new QListWidgetItem(QIcon(":/music.svg"), "发现音乐");
-    LWI2 = new QListWidgetItem(QIcon(":/radio.svg"), "私人FM");
-    LWI3 = new QListWidgetItem(QIcon(":/video.svg"), "MV");
-    LWI4 = new QListWidgetItem(QIcon(":/friend.svg"), "朋友");
-    listWidget_recommend->insertItem(1, LWI1);
-    listWidget_recommend->insertItem(2, LWI2);
-    listWidget_recommend->insertItem(3, LWI3);
-    listWidget_recommend->insertItem(4, LWI4);
-    listWidget_recommend->setFixedHeight(150);
-    vbox->addWidget(listWidget_recommend);
-    label = new QLabel;
-    label->setText("我的音乐");
-    vbox->addWidget(label);
-    QListWidget *listWidget_myMusic = new QListWidget;
-    LWI1 = new QListWidgetItem(QIcon(":/music1.svg"), "本地音乐");
-    LWI2 = new QListWidgetItem(QIcon(":/download.svg"), "下载管理");
-    LWI3 = new QListWidgetItem(QIcon(":/cloud.svg"), "我的音乐云盘");
-    LWI4 = new QListWidgetItem(QIcon(":/man.svg"), "我的歌手");
-    LWI5 = new QListWidgetItem(QIcon(":/video.svg"), "我的MV");
-    LWI6 = new QListWidgetItem(QIcon(":/radio1.svg"), "我的电台");
-    listWidget_myMusic->insertItem(1, LWI1);
-    listWidget_myMusic->insertItem(2, LWI2);
-    listWidget_myMusic->insertItem(3, LWI3);
-    listWidget_myMusic->insertItem(4, LWI4);
-    listWidget_myMusic->insertItem(5, LWI5);
-    listWidget_myMusic->insertItem(6, LWI6);
-    listWidget_myMusic->setFixedHeight(220);
-    vbox->addWidget(listWidget_myMusic);
-    label = new QLabel;
-    label->setText("创建的歌单");
-    vbox->addWidget(label);
-    QListWidget *listWidget_songList = new QListWidget;
-    LWI1 = new QListWidgetItem(QIcon(":/heart.svg"), "我喜欢的音乐");
-    LWI2 = new QListWidgetItem(QIcon(":/songlist.svg"), "我的音乐");
-    listWidget_songList->insertItem(1, LWI1);
-    listWidget_songList->insertItem(2, LWI2);
-    vbox->addWidget(listWidget_songList);
-    vbox->addStretch();
+    QVBoxLayout *vbox = new QVBoxLayout;    
+    listWidget = new QListWidget;
+    listWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+    QListWidgetItem *LWI;
+    LWI = new QListWidgetItem("推荐");
+    LWI->setFlags(Qt::NoItemFlags);
+    listWidget->insertItem(0, LWI);
+    LWI = new QListWidgetItem(QIcon(":/music.svg"), "发现音乐");
+    listWidget->insertItem(1, LWI);
+    LWI = new QListWidgetItem(QIcon(":/radio.svg"), "私人FM");
+    listWidget->insertItem(2, LWI);
+    LWI = new QListWidgetItem(QIcon(":/video.svg"), "MV");
+    listWidget->insertItem(3, LWI);
+    LWI = new QListWidgetItem(QIcon(":/friend.svg"), "朋友");
+    listWidget->insertItem(4, LWI);
+    LWI = new QListWidgetItem("本地音乐");
+    LWI->setFlags(Qt::NoItemFlags);
+    listWidget->insertItem(5, LWI);
+    LWI = new QListWidgetItem(QIcon(":/music1.svg"), "本地音乐");
+    listWidget->insertItem(6, LWI);
+    LWI = new QListWidgetItem(QIcon(":/download.svg"), "下载管理");
+    listWidget->insertItem(7, LWI);
+    LWI = new QListWidgetItem(QIcon(":/cloud.svg"), "我的音乐云盘");
+    listWidget->insertItem(8, LWI);
+    LWI = new QListWidgetItem(QIcon(":/man.svg"), "我的歌手");
+    listWidget->insertItem(9, LWI);
+    LWI = new QListWidgetItem(QIcon(":/video.svg"), "我的MV");
+    listWidget->insertItem(10, LWI);
+    LWI = new QListWidgetItem(QIcon(":/radio1.svg"), "我的电台");
+    listWidget->insertItem(11, LWI);
+    LWI = new QListWidgetItem("创建的歌单");
+    LWI->setFlags(Qt::NoItemFlags);
+    listWidget->insertItem(12, LWI);
+    LWI = new QListWidgetItem(QIcon(":/heart.svg"), "我喜欢的音乐");
+    listWidget->insertItem(13, LWI);
+    LWI = new QListWidgetItem(QIcon(":/songlist.svg"), "我的音乐");
+    listWidget->insertItem(14, LWI);
+    connect(listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
+    vbox->addWidget(listWidget);
     setLayout(vbox);
+}
+
+void NavWidget::itemClick(QListWidgetItem* item)
+{
+    Q_UNUSED(item);
+    qDebug() << "row" << listWidget->currentRow();
+    emit nav(listWidget->currentRow());
 }

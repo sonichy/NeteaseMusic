@@ -26,5 +26,6 @@
         <file>lyric.svg</file>
         <file>looplist.svg</file>
         <file>search.svg</file>
+        <file>pause.svg</file>
     </qresource>
 </RCC>

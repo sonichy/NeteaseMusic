@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "titlebar.h"
 #include "navwidget.h"
-#include "controlbar.h"
 #include "toplistitem.h"
 #include <QApplication>
 #include <QDesktopWidget>
@@ -44,12 +43,13 @@ MainWindow::MainWindow(QWidget *parent)
     label_titleBar_bottom->setStyleSheet("background-color:#9F2425");
     vbox->addWidget(label_titleBar_bottom);
 
-    apiMusic = new APIMusic;
+    //apiMusic = new APIMusic;
     createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
     NavWidget *navWidget = new NavWidget;
-    hbox->addWidget(navWidget);
-    //hbox->addStretch();
+    connect(navWidget,SIGNAL(nav(int)),this,SLOT(nav(int)));
+    hbox->addWidget(navWidget);    
+
     stackedWidget = new QStackedWidget;
     stackedWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     stackedWidget->addWidget(toplistWidget);
@@ -59,18 +59,27 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget_playlist->setColumnCount(5);
     QStringList header;
-    header << "歌名" << "歌手" << "专辑" << "时长";
+    header << "歌名" << "歌手" << "专辑" << "时长" << "id";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
     tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section{background:#232326;}");
     tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section{background:#232326;}");
     tableWidget_playlist->setStyleSheet("color:white; selection-background-color:#e6e6e6;");
+    connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
     stackedWidget->addWidget(tableWidget_playlist);
     hbox->addWidget(stackedWidget);
     vbox->addLayout(hbox);
 
-    ControlBar *controlBar = new ControlBar;
-    vbox->addWidget(controlBar);
+    controlBar = new ControlBar;
+    connect(controlBar,SIGNAL(playPause()),this,SLOT(playPause()));
+    vbox->addWidget(controlBar);    
     widget->setLayout(vbox);
+
+    player = new QMediaPlayer;
+    connect(player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
+    connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChange(qint64)));
+    connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
+    //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
+    connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
 }
 
 MainWindow::~MainWindow()
@@ -148,8 +157,78 @@ void MainWindow::createPlaylist(long id)
         tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
         tableWidget_playlist->setItem(i,1,new QTableWidgetItem(tracks[i].toObject().value("artists").toArray()[0].toObject().value("name").toString()));
         tableWidget_playlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
-        int ds = (int) tracks[i].toObject().value("duration").toDouble()/1000;
+        int ds = tracks[i].toObject().value("duration").toInt()/1000;
         tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
+        tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
     }    
     tableWidget_playlist->resizeColumnsToContents();
+}
+
+void MainWindow::playSong(int row, int column)
+{
+    Q_UNUSED(column);
+    QString surl = "http://music.163.com/song/media/outer/url?id=" + tableWidget_playlist->item(row,4)->text() + ".mp3";
+    qDebug() << surl;
+    player->setMedia(QUrl(surl));
+    player->play();
+}
+
+void MainWindow::durationChange(qint64 d)
+{
+    qDebug() << "duration =" << d;
+    controlBar->slider_progress->setMaximum(d);
+    QTime t(0,0,0);
+    t = t.addMSecs(d);
+    controlBar->label_song_duration->setText(t.toString("mm:ss"));
+}
+
+void MainWindow::positionChange(qint64 p)
+{    
+    //qDebug() << "position =" << p;
+    controlBar->slider_progress->setValue(p);
+    QTime t(0,0,0);
+    t = t.addMSecs(p);
+    controlBar->label_song_timeNow->setText(t.toString("mm:ss"));
+}
+
+void MainWindow::volumeChange(int v)
+{
+    controlBar->slider_volume->setValue(v);
+    controlBar->slider_volume->setToolTip(QString::number(v));
+}
+
+void MainWindow::stateChange(QMediaPlayer::State state)
+{
+    qDebug() << state;
+    if(state == QMediaPlayer::PlayingState){
+        controlBar->pushButton_play->setIcon(QIcon(":/pause.svg"));
+    }
+    if(state == QMediaPlayer::PausedState){
+        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
+    }
+    if(state == QMediaPlayer::StoppedState){
+        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
+    }
+}
+
+void MainWindow::playPause()
+{
+    //qDebug() << "state=" << player->state();
+    if(player->state() == QMediaPlayer::PlayingState){
+        player->pause();
+    }else if(player->state() == QMediaPlayer::PausedState){
+        player->play();
+    }else if(player->state() == QMediaPlayer::StoppedState){
+        player->play();
+    }
+}
+
+void MainWindow::nav(int i)
+{
+    qDebug() << "nav" << i;
+    switch (i) {
+    case 1:
+        stackedWidget->setCurrentIndex(0);
+        break;
+    }
 }

@@ -2,6 +2,7 @@
 #define NAVWIDGET_H
 
 #include <QWidget>
+#include <QListWidget>
 
 class NavWidget : public QWidget
 {
@@ -9,9 +10,14 @@ class NavWidget : public QWidget
 public:
     explicit NavWidget(QWidget *parent = nullptr);
 
+private:
+    QListWidget *listWidget;
+
 signals:
+    void nav(int);
 
 public slots:
+    void itemClick(QListWidgetItem* item);
 };
 
 #endif // NAVWIDGET_H
