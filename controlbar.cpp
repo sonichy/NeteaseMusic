@@ -25,7 +25,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_play->setIconSize(QSize(42,42));
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
-    connect(pushButton_play,SIGNAL(pressed()),this,SLOT(emitPlayPause()));
+    //connect(pushButton_play,SIGNAL(pressed()),this,SLOT(emitPlayPause()));
     hbox->addWidget(pushButton_play);
 
     pushButton_next = new QPushButton;
@@ -53,7 +53,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     label_song_duration->setStyleSheet("color:white;");
     hbox->addWidget(label_song_duration);
 
-    QPushButton *pushButton_mute = new QPushButton;
+    pushButton_mute = new QPushButton;
     pushButton_mute->setFixedSize(25,25);
     pushButton_mute->setIcon(QIcon(":/volume.svg"));
     pushButton_mute->setIconSize(QSize(20,20));
@@ -96,7 +96,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     setLayout(hbox);
 }
 
-void ControlBar::emitPlayPause()
-{
-    emit playPause();
-}
+//void ControlBar::emitPlayPause()
+//{
+//    emit playPause();
+//}

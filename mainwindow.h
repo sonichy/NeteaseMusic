@@ -23,8 +23,10 @@ private:
     QTableWidget *tableWidget_playlist;
     ControlBar *controlBar;
     QMediaPlayer *player;
+    int volume;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
+
 
 private slots:
     void showNormalMaximized();
@@ -37,6 +39,9 @@ private slots:
     void volumeChange(int v);
     void playPause();
     void nav(int);
+    void setMPPosition();
+    void setVolume();
+    void mute();
 };
 
 #endif // MAINWINDOW_H

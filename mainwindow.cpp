@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget_playlist->setColumnCount(5);
+    tableWidget_playlist->setColumnHidden(4,true);
     QStringList header;
     header << "歌名" << "歌手" << "专辑" << "时长" << "id";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
@@ -70,7 +71,11 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
-    connect(controlBar,SIGNAL(playPause()),this,SLOT(playPause()));
+    connect(controlBar->pushButton_play,SIGNAL(pressed()),this,SLOT(playPause()));
+    connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
+    //connect(controlBar,SIGNAL(playPause()),this,SLOT(playPause()));
+    connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
+    connect(controlBar->slider_volume,SIGNAL(sliderReleased()),this,SLOT(setVolume()));
     vbox->addWidget(controlBar);    
     widget->setLayout(vbox);
 
@@ -151,7 +156,7 @@ void MainWindow::createPlaylist(long id)
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QJsonArray tracks = json.object().value("result").toObject().value("tracks").toArray();
     //qDebug() << tracks;
-    tableWidget_playlist->clearContents();
+    tableWidget_playlist->setRowCount(0);
     for(int i=0; i<tracks.size(); i++){
         tableWidget_playlist->insertRow(i);
         tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
@@ -175,7 +180,7 @@ void MainWindow::playSong(int row, int column)
 
 void MainWindow::durationChange(qint64 d)
 {
-    qDebug() << "duration =" << d;
+    //qDebug() << "duration =" << d;
     controlBar->slider_progress->setMaximum(d);
     QTime t(0,0,0);
     t = t.addMSecs(d);
@@ -230,5 +235,30 @@ void MainWindow::nav(int i)
     case 1:
         stackedWidget->setCurrentIndex(0);
         break;
+    }
+}
+
+void MainWindow::setMPPosition()
+{
+    player->setPosition(controlBar->slider_progress->value());
+}
+
+
+void MainWindow::setVolume()
+{
+    player->setVolume(controlBar->slider_volume->value());
+}
+
+void MainWindow::mute()
+{
+    if(player->isMuted()){
+        player->setMuted(false);
+        controlBar->pushButton_mute->setIcon(QIcon(":/volume.svg"));
+        controlBar->slider_volume->setValue(volume);
+    }else{
+        volume = player->volume();
+        player->setMuted(true);
+        controlBar->pushButton_mute->setIcon(QIcon(":/mute.svg"));
+        controlBar->slider_volume->setValue(0);
     }
 }
