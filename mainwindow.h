@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 //#include "apimusic.h"
+#include "navwidget.h"
 #include "controlbar.h"
 #include <QMainWindow>
 #include <QStackedWidget>
@@ -18,6 +19,7 @@ public:
 
 private:
     //APIMusic *apiMusic;
+    NavWidget *navWidget;
     QStackedWidget *stackedWidget;
     QWidget *toplistWidget;
     QTableWidget *tableWidget_playlist;
@@ -37,11 +39,11 @@ private slots:
     void positionChange(qint64 p);
     void stateChange(QMediaPlayer::State state);
     void volumeChange(int v);
-    void playPause();
-    void nav(int);
+    void playPause();    
     void setMPPosition();
     void setVolume();
     void mute();
+    void itemClick(QListWidgetItem* item);
 };
 
 #endif // MAINWINDOW_H

@@ -5,9 +5,9 @@
 
 NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 {    
-    setStyleSheet("QLabel{color:#999999;}"
+    setStyleSheet("QPushButton {color:#ffffff;} "
                   "QListWidget { border:none; } "
-                  "QListWidget::item { color:#cccccc; padding:5px;} "
+                  "QListWidget::item { color:#cccccc; padding:4px;} "
                   "QListWidget::item:selected { background-color:#333333; }");
     setFixedWidth(200);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
@@ -48,14 +48,15 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     listWidget->insertItem(13, LWI);
     LWI = new QListWidgetItem(QIcon(":/songlist.svg"), "我的音乐");
     listWidget->insertItem(14, LWI);
-    connect(listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
     vbox->addWidget(listWidget);
-    setLayout(vbox);
-}
 
-void NavWidget::itemClick(QListWidgetItem* item)
-{
-    Q_UNUSED(item);
-    qDebug() << "row" << listWidget->currentRow();
-    emit nav(listWidget->currentRow());
+    pushButton_songname = new QPushButton;
+    pushButton_songname->setFixedHeight(40);
+    //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
+    pushButton_songname->setIconSize(QSize(30,30));
+    pushButton_songname->setFocusPolicy(Qt::NoFocus);
+    pushButton_songname->setFlat(true);
+    vbox->addWidget(pushButton_songname);
+
+    setLayout(vbox);
 }

@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "titlebar.h"
-#include "navwidget.h"
 #include "toplistitem.h"
 #include <QApplication>
 #include <QDesktopWidget>
@@ -46,8 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
     //apiMusic = new APIMusic;
     createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
-    NavWidget *navWidget = new NavWidget;
-    connect(navWidget,SIGNAL(nav(int)),this,SLOT(nav(int)));
+    navWidget = new NavWidget;
+    connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
+    //connect(navWidget,SIGNAL(nav(int)),this,SLOT(nav(int)));
     hbox->addWidget(navWidget);    
 
     stackedWidget = new QStackedWidget;
@@ -176,6 +176,7 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
+    navWidget->pushButton_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -204,7 +205,7 @@ void MainWindow::volumeChange(int v)
 
 void MainWindow::stateChange(QMediaPlayer::State state)
 {
-    qDebug() << state;
+    //qDebug() << state;
     if(state == QMediaPlayer::PlayingState){
         controlBar->pushButton_play->setIcon(QIcon(":/pause.svg"));
     }
@@ -228,10 +229,12 @@ void MainWindow::playPause()
     }
 }
 
-void MainWindow::nav(int i)
+void MainWindow::itemClick(QListWidgetItem* item)
 {
-    qDebug() << "nav" << i;
-    switch (i) {
+    Q_UNUSED(item);
+    int r = navWidget->listWidget->currentRow();
+    qDebug() << "nav" << r;
+    switch (r) {
     case 1:
         stackedWidget->setCurrentIndex(0);
         break;

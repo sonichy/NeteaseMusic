@@ -3,21 +3,24 @@
 
 #include <QWidget>
 #include <QListWidget>
+#include <QPushButton>
 
 class NavWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit NavWidget(QWidget *parent = nullptr);
+    QListWidget *listWidget;
+    QPushButton *pushButton_songname;
 
 private:
-    QListWidget *listWidget;
 
-signals:
-    void nav(int);
+
+signals:    
 
 public slots:
-    void itemClick(QListWidgetItem* item);
+
 };
 
 #endif // NAVWIDGET_H
