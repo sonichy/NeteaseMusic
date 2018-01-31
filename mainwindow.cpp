@@ -150,13 +150,13 @@ void MainWindow::showNormalMaximized()
 void MainWindow::createPlaylist(long id)
 {
     stackedWidget->setCurrentIndex(1);
+    tableWidget_playlist->setRowCount(0);
     qDebug() << id;
     QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QJsonArray tracks = json.object().value("result").toObject().value("tracks").toArray();
     //qDebug() << tracks;
-    tableWidget_playlist->setRowCount(0);
     for(int i=0; i<tracks.size(); i++){
         tableWidget_playlist->insertRow(i);
         tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
