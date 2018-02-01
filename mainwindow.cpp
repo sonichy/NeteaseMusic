@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "titlebar.h"
 #include "toplistitem.h"
 #include <QApplication>
 #include <QDesktopWidget>
@@ -30,7 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->setSpacing(0);
     vbox->setContentsMargins(0,0,0,0);
 
-    TitleBar *titleBar = new TitleBar;
+    titleBar = new TitleBar;
+    connect(titleBar->pushButton_search,SIGNAL(clicked(bool)),this,SLOT(search()));
+    connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(search()));
     connect(titleBar->pushButton_minimize,SIGNAL(clicked(bool)),this,SLOT(showMinimized()));
     connect(titleBar->pushButton_maximize,SIGNAL(clicked(bool)),this,SLOT(showNormalMaximized()));
     connect(titleBar->pushButton_close,SIGNAL(clicked(bool)),qApp,SLOT(quit()));
@@ -130,6 +131,22 @@ QByteArray MainWindow::getReply(QString surl)
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
     QNetworkReply *reply = NAM->get(request);
+    QEventLoop loop;
+    connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
+    loop.exec();
+    reply->deleteLater();
+    return reply->readAll();
+}
+
+QByteArray MainWindow::postReply(QString surl,QString spost)
+{
+    QNetworkAccessManager *NAM = new QNetworkAccessManager;
+    QNetworkRequest request;
+    request.setUrl(QUrl(surl));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    QByteArray BA_post;
+    BA_post.append(spost);
+    QNetworkReply *reply = NAM->post(request,BA_post);
     QEventLoop loop;
     connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
     loop.exec();
@@ -264,4 +281,27 @@ void MainWindow::mute()
         controlBar->pushButton_mute->setIcon(QIcon(":/mute.svg"));
         controlBar->slider_volume->setValue(0);
     }
+}
+
+void MainWindow::search()
+{
+    QString surl = "http://music.163.com/api/search/pc";
+    QString spost = "offset=0&limit=20&type=1&s=" + titleBar->lineEdit_search->text();
+    qDebug() << surl + "?" + spost;
+    //qDebug() << postReply(surl,spost);
+    stackedWidget->setCurrentIndex(1);
+    tableWidget_playlist->setRowCount(0);
+    QJsonDocument json = QJsonDocument::fromJson(postReply(surl,spost));
+    QJsonArray songs = json.object().value("result").toObject().value("songs").toArray();
+    //qDebug() << songs;
+    for(int i=0; i<songs.size(); i++){
+        tableWidget_playlist->insertRow(i);
+        tableWidget_playlist->setItem(i,0,new QTableWidgetItem(songs[i].toObject().value("name").toString()));
+        tableWidget_playlist->setItem(i,1,new QTableWidgetItem(songs[i].toObject().value("artists").toArray()[0].toObject().value("name").toString()));
+        tableWidget_playlist->setItem(i,2,new QTableWidgetItem(songs[i].toObject().value("album").toObject().value("name").toString()));
+        int ds = songs[i].toObject().value("duration").toInt()/1000;
+        tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
+        tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(songs[i].toObject().value("id").toInt())));
+    }
+    tableWidget_playlist->resizeColumnsToContents();
 }

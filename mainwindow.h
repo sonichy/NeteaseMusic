@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 //#include "apimusic.h"
+#include "titlebar.h"
 #include "navwidget.h"
 #include "controlbar.h"
 #include <QMainWindow>
@@ -19,6 +20,7 @@ public:
 
 private:
     //APIMusic *apiMusic;
+    TitleBar *titleBar;
     NavWidget *navWidget;
     QStackedWidget *stackedWidget;
     QWidget *toplistWidget;
@@ -28,7 +30,7 @@ private:
     int volume;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
-
+    QByteArray postReply(QString surl,QString spost);
 
 private slots:
     void showNormalMaximized();
@@ -44,6 +46,7 @@ private slots:
     void setVolume();
     void mute();
     void itemClick(QListWidgetItem* item);
+    void search();
 };
 
 #endif // MAINWINDOW_H

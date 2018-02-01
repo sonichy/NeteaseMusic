@@ -6,7 +6,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QDialog>
-#include <QLineEdit>
 
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
@@ -32,12 +31,12 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     hbox->addStretch();
 
-    QLineEdit *lineEdit_search = new QLineEdit;
+    lineEdit_search = new QLineEdit;
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
     lineEdit_search->setFixedWidth(200);
     hbox->addWidget(lineEdit_search);
 
-    QPushButton *pushButton_search = new QPushButton;
+    pushButton_search = new QPushButton;
     pushButton_search->setFixedSize(24,24);
     pushButton_search->setIcon(QIcon(":/search.svg"));
     pushButton_search->setIconSize(QSize(20,20));
@@ -125,7 +124,7 @@ void TitleBar::about()
     label->setStyleSheet("color:white;font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("         一款基于 Qt 的网易云音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n主页：http://sonichy.gitee.io\n音乐版权：网页云音乐\n参考：https://github.com/gcmwhite/CloudMusic-Bc-5");
+    label->setText("         一款基于 Qt 的网易云音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n主页：http://sonichy.gitee.io\n音乐版权：网页云音乐\n参考：\nhttps://github.com/gcmwhite/CloudMusic-Bc-5\nhttp://get.ftqq.com/7430.get");
     label->setStyleSheet("color:white;font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);

@@ -11,4 +11,5 @@
 ### 参考
 UI：网页云音乐  
 API：  
-https://github.com/gcmwhite/CloudMusic-Bc-5
+https://github.com/gcmwhite/CloudMusic-Bc-5  
+http://get.ftqq.com/7430.get

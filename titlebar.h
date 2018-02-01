@@ -3,14 +3,17 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QLineEdit>
 #include <QMouseEvent>
 
 class TitleBar : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit TitleBar(QWidget *parent = nullptr);
-    QPushButton *pushButton_minimize, *pushButton_maximize, *pushButton_close;
+    QPushButton *pushButton_search, *pushButton_minimize, *pushButton_maximize, *pushButton_close;
+    QLineEdit *lineEdit_search;
 
 private:
     QPoint relativePos;
