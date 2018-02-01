@@ -28,5 +28,7 @@
         <file>search.svg</file>
         <file>pause.svg</file>
         <file>mute.svg</file>
+        <file>lastpage.svg</file>
+        <file>nextpage.svg</file>
     </qresource>
 </RCC>

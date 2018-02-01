@@ -6,13 +6,15 @@
 #include <QAction>
 #include <QApplication>
 #include <QDialog>
+#include <QIntValidator>
 
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("QPushButton::menu-indicator{width:0px;}"
                   "QMenu::item{color:white;} QMenu::item:selected {background-color: #333333;}"
-                  "QLineEdit { font-size:12px; border:2px solid #000000; border-top-left-radius:10px; border-bottom-left-radius:10px; color:#cccccc; background-color:#000000; padding-left:10px;}"
-                  "#search { background-color:#000000; border-top-right-radius:10px; border-bottom-right-radius:10px; }");
+                  "QLineEdit { font-size:12px;  color:#cccccc; background-color:#000000; border:2px solid #000000; border-radius:10px;}"
+                  "#lineEditSearch {  border-top-right-radius:0px; border-bottom-right-radius:0px; padding-left:10px;}"
+                  "#pushButtonSearch { background-color:#000000; border-top-right-radius:10px; border-bottom-right-radius:10px; }");
     setFixedHeight(50);
 
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -32,19 +34,47 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     hbox->addStretch();
 
     lineEdit_search = new QLineEdit;
+    lineEdit_search->setObjectName("lineEditSearch");
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
-    lineEdit_search->setFixedWidth(200);
+    lineEdit_search->setFixedWidth(200);    
     hbox->addWidget(lineEdit_search);
 
     pushButton_search = new QPushButton;
+    pushButton_search->setObjectName("pushButtonSearch");
     pushButton_search->setFixedSize(24,24);
     pushButton_search->setIcon(QIcon(":/search.svg"));
     pushButton_search->setIconSize(QSize(20,20));
     pushButton_search->setFlat(true);
-    pushButton_search->setFocusPolicy(Qt::NoFocus);    
-    pushButton_search->setObjectName("search");
+    pushButton_search->setFocusPolicy(Qt::NoFocus);
     pushButton_search->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_search);
+
+    pushButton_lastPage = new QPushButton;
+    pushButton_lastPage->setFixedSize(24,24);
+    pushButton_lastPage->setIcon(QIcon(":/lastpage.svg"));
+    pushButton_lastPage->setIconSize(QSize(20,20));
+    pushButton_lastPage->setFlat(true);
+    pushButton_lastPage->setFocusPolicy(Qt::NoFocus);
+    pushButton_lastPage->setCursor(Qt::PointingHandCursor);
+    hbox->addWidget(pushButton_lastPage);
+
+    lineEdit_page = new QLineEdit;
+    lineEdit_page->setObjectName("lineEditPage");
+    lineEdit_page->setText("1");
+    QValidator *validator = new QIntValidator(1,99,lineEdit_page);
+    lineEdit_page->setValidator(validator);
+    lineEdit_page->setFixedWidth(30);
+    lineEdit_page->setAlignment(Qt::AlignCenter);
+    hbox->addWidget(lineEdit_page);
+
+    pushButton_nextPage = new QPushButton;
+    pushButton_nextPage->setFixedSize(24,24);
+    pushButton_nextPage->setIcon(QIcon(":/nextpage.svg"));
+    pushButton_nextPage->setIconSize(QSize(20,20));
+    pushButton_nextPage->setFlat(true);
+    pushButton_nextPage->setFocusPolicy(Qt::NoFocus);
+    pushButton_nextPage->setCursor(Qt::PointingHandCursor);
+    hbox->addWidget(pushButton_nextPage);
 
     hbox->addStretch();
 

@@ -12,8 +12,8 @@ class TitleBar : public QWidget
 
 public:
     explicit TitleBar(QWidget *parent = nullptr);
-    QPushButton *pushButton_search, *pushButton_minimize, *pushButton_maximize, *pushButton_close;
-    QLineEdit *lineEdit_search;
+    QPushButton *pushButton_search, *pushButton_lastPage, *pushButton_nextPage, *pushButton_minimize, *pushButton_maximize, *pushButton_close;
+    QLineEdit *lineEdit_search, *lineEdit_page;
 
 private:
     QPoint relativePos;

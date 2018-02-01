@@ -47,6 +47,8 @@ private slots:
     void mute();
     void itemClick(QListWidgetItem* item);
     void search();
+    void lastPage();
+    void nextPage();
 };
 
 #endif // MAINWINDOW_H
