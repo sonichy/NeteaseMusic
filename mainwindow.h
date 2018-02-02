@@ -9,6 +9,7 @@
 #include <QStackedWidget>
 #include <QTableWidget>
 #include <QMediaPlayer>
+#include <QTextBrowser>
 
 class MainWindow : public QMainWindow
 {
@@ -25,12 +26,14 @@ private:
     QStackedWidget *stackedWidget;
     QWidget *toplistWidget;
     QTableWidget *tableWidget_playlist;
+    QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
     int volume;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
     QByteArray postReply(QString surl,QString spost);
+    void getLyric(QString id);
 
 private slots:
     void showNormalMaximized();

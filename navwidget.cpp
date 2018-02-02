@@ -18,11 +18,14 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     LWI = new QListWidgetItem("推荐");
     LWI->setFlags(Qt::NoItemFlags);
     listWidget->insertItem(0, LWI);
-    LWI = new QListWidgetItem(QIcon(":/music.svg"), "发现音乐");
+    //LWI = new QListWidgetItem(QIcon(":/music.svg"), "发现音乐");
+    LWI = new QListWidgetItem(QIcon(":/music.svg"), "排行榜");
     listWidget->insertItem(1, LWI);
-    LWI = new QListWidgetItem(QIcon(":/radio.svg"), "私人FM");
+    //LWI = new QListWidgetItem(QIcon(":/radio.svg"), "私人FM");
+    LWI = new QListWidgetItem(QIcon(":/radio.svg"), "歌单");
     listWidget->insertItem(2, LWI);
-    LWI = new QListWidgetItem(QIcon(":/video.svg"), "MV");
+    //LWI = new QListWidgetItem(QIcon(":/video.svg"), "MV");
+    LWI = new QListWidgetItem(QIcon(":/video.svg"), "歌词");
     listWidget->insertItem(3, LWI);
     LWI = new QListWidgetItem(QIcon(":/friend.svg"), "朋友");
     listWidget->insertItem(4, LWI);

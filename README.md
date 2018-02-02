@@ -10,6 +10,8 @@
 
 ![alt](search.png)  
 
+![alt](lyric.png)  
+
 ### 参考
 UI：网页云音乐  
 API：  

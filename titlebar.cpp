@@ -142,7 +142,7 @@ void TitleBar::about()
 {
     QDialog *dialog = new QDialog(this);
     dialog->setWindowTitle("关于");
-    dialog->setFixedSize(500,300);
+    dialog->setFixedSize(500,350);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
     label->setPixmap(QPixmap(":/icon.jpg").scaled(80,80,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
