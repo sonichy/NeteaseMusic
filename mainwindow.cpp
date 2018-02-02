@@ -77,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     hbox->addWidget(stackedWidget);
 
     textBrowser = new QTextBrowser;
+    textBrowser->zoomIn(5);
     textBrowser->setStyleSheet("color:#ffffff;");
     stackedWidget->addWidget(textBrowser);
 
@@ -188,12 +189,18 @@ void MainWindow::createPlaylist(long id)
     for(int i=0; i<tracks.size(); i++){
         tableWidget_playlist->insertRow(i);
         tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
-        tableWidget_playlist->setItem(i,1,new QTableWidgetItem(tracks[i].toObject().value("artists").toArray()[0].toObject().value("name").toString()));
+        QJsonArray artists = tracks[i].toObject().value("artists").toArray();
+        QString sartists = "";
+        for(int a=0; a<artists.size(); a++){
+            sartists += artists[a].toObject().value("name").toString();
+            if(a<artists.size()-1) sartists += ",";
+        }
+        tableWidget_playlist->setItem(i,1,new QTableWidgetItem(sartists));
         tableWidget_playlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
         int ds = tracks[i].toObject().value("duration").toInt()/1000;
         tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
         tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
-        tableWidget_playlist->setItem(i,5,new QTableWidgetItem(""));
+        tableWidget_playlist->setItem(i,5,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("picUrl").toString()));
     }
     tableWidget_playlist->resizeColumnsToContents();
 }
@@ -277,7 +284,7 @@ void MainWindow::itemClick(QListWidgetItem* item)
         stackedWidget->setCurrentWidget(tableWidget_playlist);
         break;
     case 3:
-        textBrowser->setStyleSheet("color:#ffffff;border-image:url(cover.jpg);");
+        textBrowser->setStyleSheet("color:#ffffff; border-image:url(cover.jpg);");
         stackedWidget->setCurrentWidget(textBrowser);
         break;
     }

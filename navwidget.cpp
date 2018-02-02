@@ -7,7 +7,7 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 {    
     setStyleSheet("QPushButton {color:#ffffff;} "
                   "QListWidget { border:none; } "
-                  "QListWidget::item { color:#cccccc; padding:4px;} "
+                  "QListWidget::item { color:#cccccc; padding:3px;} "
                   "QListWidget::item:selected { background-color:#333333; }");
     setFixedWidth(200);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
@@ -54,9 +54,9 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     vbox->addWidget(listWidget);
 
     pushButton_songname = new QPushButton;
-    pushButton_songname->setFixedHeight(40);
+    pushButton_songname->setFixedHeight(70);
     //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
-    pushButton_songname->setIconSize(QSize(40,40));
+    pushButton_songname->setIconSize(QSize(70,70));
     pushButton_songname->setFocusPolicy(Qt::NoFocus);
     pushButton_songname->setFlat(true);
     vbox->addWidget(pushButton_songname);

@@ -31,6 +31,7 @@ void ToplistItem::replyImage(QNetworkReply *reply)
     QPixmap pixmap;
     pixmap.loadFromData(reply->readAll());
     pushButton->setIcon(QIcon(pixmap));
+    reply->deleteLater();
 }
 
 void ToplistItem::sendId()
