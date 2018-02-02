@@ -53,12 +53,15 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     listWidget->insertItem(14, LWI);
     vbox->addWidget(listWidget);
 
-    pushButton_songname = new QPushButton;
-    pushButton_songname->setFixedHeight(70);
+    pushButton_songname = new QPushButton;    
+    pushButton_songname->setFixedHeight(74);
     //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
     pushButton_songname->setIconSize(QSize(70,70));
     pushButton_songname->setFocusPolicy(Qt::NoFocus);
     pushButton_songname->setFlat(true);
+    QFont font;
+    font.setPointSize(11);
+    pushButton_songname->setFont(font);
     vbox->addWidget(pushButton_songname);
 
     setLayout(vbox);

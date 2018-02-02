@@ -14,6 +14,7 @@
 #include <QEventLoop>
 #include <QHeaderView>
 #include <QDir>
+#include <QTextBlock>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
     connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
-    //connect(navWidget,SIGNAL(nav(int)),this,SLOT(nav(int)));
+    connect(navWidget->pushButton_songname,SIGNAL(clicked(bool)),this,SLOT(navLyric()));
     hbox->addWidget(navWidget);
 
     stackedWidget = new QStackedWidget;
@@ -240,6 +241,39 @@ void MainWindow::positionChange(qint64 p)
     QTime t(0,0,0);
     t = t.addMSecs(p);
     controlBar->label_song_timeNow->setText(t.toString("mm:ss"));
+
+    // 歌词选行
+    int hl;
+    // 非最后一句
+    for(int i=0;i<lyrics.size()-1;i++){
+        //qDebug() << t << lyrics.at(i).time;
+        if(t>lyrics.at(i).time && t<lyrics.at(i+1).time){
+            //if(desktopLyric->isHidden()){
+                //label_lyric->setText(lyrics.at(i).sentence);
+            //}else{
+                //label_lyric->setText("");
+                //desktopLyric->label_lyric->setText(lyrics.at(i).sentence);
+            //}
+            hl=i;
+            break;
+        }
+    }
+    for(int a=0; a<lyrics.size(); a++){
+        QTextCursor cursor(textBrowser->document()->findBlockByLineNumber(a));
+        QTextBlockFormat TBF = cursor.blockFormat();
+        TBF.setForeground(QBrush(Qt::white));
+        //TBF.setBackground(QBrush(Qt::transparent));
+        TBF.clearBackground();
+        cursor.setBlockFormat(TBF);
+    }
+    if(lyrics.size()>0){
+        QTextCursor cursor1(textBrowser->document()->findBlockByLineNumber(hl));
+        QTextBlockFormat TBF1 = cursor1.blockFormat();
+        TBF1.setForeground(QBrush(Qt::green));
+        TBF1.setBackground(QBrush(QColor(255,255,255,80)));
+        cursor1.setBlockFormat(TBF1);
+        textBrowser->setTextCursor(cursor1);
+    }
 }
 
 void MainWindow::volumeChange(int v)
@@ -287,7 +321,7 @@ void MainWindow::itemClick(QListWidgetItem* item)
         stackedWidget->setCurrentWidget(tableWidget_playlist);
         break;
     case 3:
-        textBrowser->setStyleSheet("color:#ffffff; border-image:url(cover.jpg);");
+        textBrowser->setStyleSheet("color:white;border-image:url(cover.jpg);");
         stackedWidget->setCurrentWidget(textBrowser);
         break;
     }
@@ -389,4 +423,10 @@ void MainWindow::getLyric(QString id)
     QTextCursor cursor = textBrowser->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     textBrowser->setTextCursor(cursor);
+}
+
+void MainWindow::navLyric()
+{
+    textBrowser->setStyleSheet("color:white;border-image:url(cover.jpg);");
+    stackedWidget->setCurrentWidget(textBrowser);
 }

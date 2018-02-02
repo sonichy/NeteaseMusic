@@ -58,6 +58,7 @@ private slots:
     void search();
     void lastPage();
     void nextPage();
+    void navLyric();
 };
 
 #endif // MAINWINDOW_H
