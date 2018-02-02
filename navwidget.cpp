@@ -56,7 +56,7 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     pushButton_songname = new QPushButton;
     pushButton_songname->setFixedHeight(40);
     //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
-    pushButton_songname->setIconSize(QSize(30,30));
+    pushButton_songname->setIconSize(QSize(40,40));
     pushButton_songname->setFocusPolicy(Qt::NoFocus);
     pushButton_songname->setFlat(true);
     vbox->addWidget(pushButton_songname);

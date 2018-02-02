@@ -13,6 +13,7 @@
 #include <QNetworkReply>
 #include <QEventLoop>
 #include <QHeaderView>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     navWidget = new NavWidget;
     connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
     //connect(navWidget,SIGNAL(nav(int)),this,SLOT(nav(int)));
-    hbox->addWidget(navWidget);    
+    hbox->addWidget(navWidget);
 
     stackedWidget = new QStackedWidget;
     stackedWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -62,10 +63,11 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableWidget_playlist->setColumnCount(5);
+    tableWidget_playlist->setColumnCount(6);
     tableWidget_playlist->setColumnHidden(4,true);
+    tableWidget_playlist->setColumnHidden(5,true);
     QStringList header;
-    header << "歌名" << "歌手" << "专辑" << "时长" << "id";
+    header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
     tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
     tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
@@ -75,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     hbox->addWidget(stackedWidget);
 
     textBrowser = new QTextBrowser;
-    textBrowser->setStyleSheet("color:#ffffff");
+    textBrowser->setStyleSheet("color:#ffffff;");
     stackedWidget->addWidget(textBrowser);
 
     vbox->addLayout(hbox);
@@ -191,6 +193,7 @@ void MainWindow::createPlaylist(long id)
         int ds = tracks[i].toObject().value("duration").toInt()/1000;
         tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
         tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
+        tableWidget_playlist->setItem(i,5,new QTableWidgetItem(""));
     }
     tableWidget_playlist->resizeColumnsToContents();
 }
@@ -203,8 +206,12 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
-    navWidget->pushButton_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
+    navWidget->pushButton_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());    
     getLyric(id);
+    QPixmap pixmap;
+    pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
+    navWidget->pushButton_songname->setIcon(QIcon(pixmap));
+    pixmap.save(QDir::currentPath() + "/cover.jpg");
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -270,6 +277,7 @@ void MainWindow::itemClick(QListWidgetItem* item)
         stackedWidget->setCurrentWidget(tableWidget_playlist);
         break;
     case 3:
+        textBrowser->setStyleSheet("color:#ffffff;border-image:url(cover.jpg);");
         stackedWidget->setCurrentWidget(textBrowser);
         break;
     }
@@ -321,6 +329,7 @@ void MainWindow::search()
             int ds = songs[i].toObject().value("duration").toInt()/1000;
             tableWidget_playlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
             tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(songs[i].toObject().value("id").toInt())));
+            tableWidget_playlist->setItem(i,5,new QTableWidgetItem(songs[i].toObject().value("album").toObject().value("picUrl").toString()));
         }
         tableWidget_playlist->resizeColumnsToContents();
     }
