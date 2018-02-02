@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
-    //connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
+    navWidget->listWidget->setCurrentRow(1);
     connect(navWidget->listWidget,SIGNAL(currentRowChanged(int)),this,SLOT(navPage(int)));
     connect(navWidget->pushButton_songname,SIGNAL(clicked(bool)),this,SLOT(navLyric()));
     hbox->addWidget(navWidget);
