@@ -80,10 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
-    //textBrowser->selectAll();
     textBrowser->setAlignment(Qt::AlignCenter);
-    //textBrowser->moveCursor(QTextCursor::Start,QTextCursor::MoveAnchor);
-    textBrowser->setStyleSheet("color:#ffffff;");
     stackedWidget->addWidget(textBrowser);
 
     vbox->addLayout(hbox);
@@ -176,7 +173,8 @@ void MainWindow::showNormalMaximized()
 
 void MainWindow::createPlaylist(long id)
 {
-    stackedWidget->setCurrentWidget(tableWidget_playlist);
+    //stackedWidget->setCurrentWidget(tableWidget_playlist);
+    navWidget->listWidget->setCurrentRow(2);
     tableWidget_playlist->setRowCount(0);
     qDebug() << id;
     QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
