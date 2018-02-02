@@ -54,7 +54,8 @@ private slots:
     void setMPPosition();
     void setVolume();
     void mute();
-    void itemClick(QListWidgetItem* item);
+    //void itemClick(QListWidgetItem* item);
+    void navPage(int row);
     void search();
     void lastPage();
     void nextPage();

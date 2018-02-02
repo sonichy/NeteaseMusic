@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QPushButton>
+#include <QLabel>
 
 class NavWidget : public QWidget
 {
@@ -13,9 +14,9 @@ public:
     explicit NavWidget(QWidget *parent = nullptr);
     QListWidget *listWidget;
     QPushButton *pushButton_songname;
+    QLabel *label_songname;
 
 private:
-
 
 signals:    
 

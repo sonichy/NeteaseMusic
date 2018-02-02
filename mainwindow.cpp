@@ -52,7 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
-    connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
+    //connect(navWidget->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemClick(QListWidgetItem*)));
+    connect(navWidget->listWidget,SIGNAL(currentRowChanged(int)),this,SLOT(navPage(int)));
     connect(navWidget->pushButton_songname,SIGNAL(clicked(bool)),this,SLOT(navLyric()));
     hbox->addWidget(navWidget);
 
@@ -132,13 +133,6 @@ void MainWindow::createWidgetToplist()
             gridLayout->addWidget(toplistItem,r,c);
         }
     }
-//    QJsonObject artistToplist = json.object().value("artistToplist").toObject();
-//    QString coverUrl = artistToplist.value("coverUrl").toString();
-//    ToplistItem *toplistItem = new ToplistItem;
-//    toplistItem->setImage(coverUrl);
-//    toplistItem->id = artistToplist.value("id").toDouble();
-//    connect(toplistItem,SIGNAL(send(long)),this,SLOT(createPlaylist(long)));
-//    gridLayout->addWidget(toplistItem,list.size()/5,0);
 }
 
 QByteArray MainWindow::getReply(QString surl)
@@ -217,7 +211,7 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
-    navWidget->pushButton_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());    
+    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
     getLyric(id);
     QPixmap pixmap;
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
@@ -243,10 +237,9 @@ void MainWindow::positionChange(qint64 p)
     controlBar->label_song_timeNow->setText(t.toString("mm:ss"));
 
     // 歌词选行
-    int hl;
+    int hl=0;
     // 非最后一句
-    for(int i=0;i<lyrics.size()-1;i++){
-        //qDebug() << t << lyrics.at(i).time;
+    for(int i=0; i<lyrics.size()-1; i++){
         if(t>lyrics.at(i).time && t<lyrics.at(i+1).time){
             //if(desktopLyric->isHidden()){
                 //label_lyric->setText(lyrics.at(i).sentence);
@@ -254,6 +247,7 @@ void MainWindow::positionChange(qint64 p)
                 //label_lyric->setText("");
                 //desktopLyric->label_lyric->setText(lyrics.at(i).sentence);
             //}
+            //qDebug() << t << lyrics.at(i).time;
             hl=i;
             break;
         }
@@ -308,12 +302,10 @@ void MainWindow::playPause()
     }
 }
 
-void MainWindow::itemClick(QListWidgetItem* item)
+void MainWindow::navPage(int row)
 {
-    Q_UNUSED(item);
-    int r = navWidget->listWidget->currentRow();
-    qDebug() << "nav" << r;
-    switch (r) {
+    qDebug() << "nav" << row;
+    switch (row) {
     case 1:
         stackedWidget->setCurrentWidget(toplistWidget);
         break;
@@ -321,7 +313,7 @@ void MainWindow::itemClick(QListWidgetItem* item)
         stackedWidget->setCurrentWidget(tableWidget_playlist);
         break;
     case 3:
-        textBrowser->setStyleSheet("color:white;border-image:url(cover.jpg);");
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
         stackedWidget->setCurrentWidget(textBrowser);
         break;
     }
@@ -402,8 +394,7 @@ void MainWindow::getLyric(QString id)
     QString surl = "http://music.163.com/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=" + id;
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QString slyric = json.object().value("lrc").toObject().value("lyric").toString();
-    //textBrowser->setText(slyric);
+    QString slyric = json.object().value("lrc").toObject().value("lyric").toString();    
 
     lyrics.clear();
     QStringList line = slyric.split("\n");
@@ -412,7 +403,10 @@ void MainWindow::getLyric(QString id)
             QStringList strlist = line.at(i).split("]");
             //qDebug() << strlist.at(0).mid(1);
             Lyric lyric;
-            lyric.time = QTime::fromString(strlist.at(0).mid(1), "mm:ss.zzz");
+            QString stime = strlist.at(0).mid(1);
+            //qDebug() << stime.length() << stime.indexOf(".");
+            if((stime.length()-stime.indexOf("."))==3) stime += "0";
+            lyric.time = QTime::fromString(stime, "mm:ss.zzz");
             lyric.sentence = strlist.at(1);
             lyrics.append(lyric);
         }
@@ -427,6 +421,5 @@ void MainWindow::getLyric(QString id)
 
 void MainWindow::navLyric()
 {
-    textBrowser->setStyleSheet("color:white;border-image:url(cover.jpg);");
-    stackedWidget->setCurrentWidget(textBrowser);
+    navWidget->listWidget->setCurrentRow(3);
 }

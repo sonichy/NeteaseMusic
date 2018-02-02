@@ -1,6 +1,6 @@
 #include "navwidget.h"
 #include <QVBoxLayout>
-#include <QLabel>
+
 #include <QDebug>
 
 NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
@@ -53,16 +53,20 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     listWidget->insertItem(14, LWI);
     vbox->addWidget(listWidget);
 
+    QHBoxLayout *hbox = new QHBoxLayout;
     pushButton_songname = new QPushButton;    
     pushButton_songname->setFixedHeight(74);
     //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
     pushButton_songname->setIconSize(QSize(70,70));
     pushButton_songname->setFocusPolicy(Qt::NoFocus);
     pushButton_songname->setFlat(true);
-    QFont font;
-    font.setPointSize(11);
-    pushButton_songname->setFont(font);
-    vbox->addWidget(pushButton_songname);
+    hbox->addWidget(pushButton_songname);
+    label_songname = new QLabel;
+    label_songname->setStyleSheet("color:white; font-size:13px;");
+    hbox->addWidget(label_songname);
+    hbox->addStretch();
+
+    vbox->addLayout(hbox);
 
     setLayout(vbox);
 }
