@@ -77,7 +77,10 @@ MainWindow::MainWindow(QWidget *parent)
     hbox->addWidget(stackedWidget);
 
     textBrowser = new QTextBrowser;
-    textBrowser->zoomIn(5);
+    textBrowser->zoomIn(10);
+    //textBrowser->selectAll();
+    textBrowser->setAlignment(Qt::AlignCenter);
+    //textBrowser->moveCursor(QTextCursor::Start,QTextCursor::MoveAnchor);
     textBrowser->setStyleSheet("color:#ffffff;");
     stackedWidget->addWidget(textBrowser);
 
@@ -365,6 +368,25 @@ void MainWindow::getLyric(QString id)
     QString surl = "http://music.163.com/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=" + id;
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QString lyric = json.object().value("lrc").toObject().value("lyric").toString();
-    textBrowser->setText(lyric);
+    QString slyric = json.object().value("lrc").toObject().value("lyric").toString();
+    //textBrowser->setText(slyric);
+
+    lyrics.clear();
+    QStringList line = slyric.split("\n");
+    for(int i=0; i<line.size(); i++){
+        if(line.at(i).contains("]")){
+            QStringList strlist = line.at(i).split("]");
+            //qDebug() << strlist.at(0).mid(1);
+            Lyric lyric;
+            lyric.time = QTime::fromString(strlist.at(0).mid(1), "mm:ss.zzz");
+            lyric.sentence = strlist.at(1);
+            lyrics.append(lyric);
+        }
+    }
+    for(int i=0; i<lyrics.size(); i++){
+        textBrowser->insertPlainText(lyrics.at(i).sentence + "\n");
+    }
+    QTextCursor cursor = textBrowser->textCursor();
+    cursor.setPosition(0, QTextCursor::MoveAnchor);
+    textBrowser->setTextCursor(cursor);
 }

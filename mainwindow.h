@@ -10,6 +10,7 @@
 #include <QTableWidget>
 #include <QMediaPlayer>
 #include <QTextBrowser>
+#include <QTime>
 
 class MainWindow : public QMainWindow
 {
@@ -34,6 +35,11 @@ private:
     QByteArray getReply(QString surl);
     QByteArray postReply(QString surl,QString spost);
     void getLyric(QString id);
+    struct Lyric{
+        QTime time;
+        QString sentence;
+    };
+    QList<Lyric> lyrics;
 
 private slots:
     void showNormalMaximized();
