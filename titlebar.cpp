@@ -102,7 +102,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_minimize->setIcon(QIcon(":/minimize.svg"));
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
-    pushButton_minimize->setFocusPolicy(Qt::NoFocus);
+    pushButton_minimize->setFocusPolicy(Qt::NoFocus);    
     hbox->addWidget(pushButton_minimize);
 
     pushButton_maximize = new QPushButton;
@@ -110,7 +110,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
-    pushButton_maximize->setFocusPolicy(Qt::NoFocus);
+    pushButton_maximize->setFocusPolicy(Qt::NoFocus);    
     hbox->addWidget(pushButton_maximize);
 
     pushButton_close = new QPushButton;
@@ -118,7 +118,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_close->setIcon(QIcon(":/close.svg"));
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
-    pushButton_close->setFocusPolicy(Qt::NoFocus);    
+    pushButton_close->setFocusPolicy(Qt::NoFocus);
     hbox->addWidget(pushButton_close);
 
     setLayout(hbox);

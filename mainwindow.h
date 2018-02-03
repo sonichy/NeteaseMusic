@@ -42,7 +42,7 @@ private:
     QList<Lyric> lyrics;
 
 private slots:
-    void showNormalMaximized();
+    void showNormalMaximize();
     void moveMe(QPoint point);
     void createPlaylist(long);
     void playSong(int,int);
@@ -59,7 +59,7 @@ private slots:
     void search();
     void lastPage();
     void nextPage();
-    void navLyric();
+    void swapLyric();
 };
 
 #endif // MAINWINDOW_H

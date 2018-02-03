@@ -13,7 +13,7 @@ class NavWidget : public QWidget
 public:
     explicit NavWidget(QWidget *parent = nullptr);
     QListWidget *listWidget;
-    QPushButton *pushButton_songname;
+    QPushButton *pushButton_albumPic;
     QLabel *label_songname;
 
 private:

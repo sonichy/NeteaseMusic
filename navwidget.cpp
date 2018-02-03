@@ -19,13 +19,13 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     LWI->setFlags(Qt::NoItemFlags);
     listWidget->insertItem(0, LWI);
     //LWI = new QListWidgetItem(QIcon(":/music.svg"), "发现音乐");
-    LWI = new QListWidgetItem(QIcon(":/music.svg"), "排行榜");
+    LWI = new QListWidgetItem(QIcon(":/rank.svg"), "排行榜");
     listWidget->insertItem(1, LWI);
     //LWI = new QListWidgetItem(QIcon(":/radio.svg"), "私人FM");
-    LWI = new QListWidgetItem(QIcon(":/radio.svg"), "歌单");
+    LWI = new QListWidgetItem(QIcon(":/songlist.svg"), "歌单");
     listWidget->insertItem(2, LWI);
     //LWI = new QListWidgetItem(QIcon(":/video.svg"), "MV");
-    LWI = new QListWidgetItem(QIcon(":/video.svg"), "歌词");
+    LWI = new QListWidgetItem(QIcon(":/lyric.svg"), "歌词");
     listWidget->insertItem(3, LWI);
     LWI = new QListWidgetItem(QIcon(":/friend.svg"), "朋友");
     listWidget->insertItem(4, LWI);
@@ -54,13 +54,13 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     vbox->addWidget(listWidget);
 
     QHBoxLayout *hbox = new QHBoxLayout;
-    pushButton_songname = new QPushButton;    
-    pushButton_songname->setFixedHeight(74);
-    //pushButton_songname->setIcon(QIcon(":/looplist.svg"));
-    pushButton_songname->setIconSize(QSize(70,70));
-    pushButton_songname->setFocusPolicy(Qt::NoFocus);
-    pushButton_songname->setFlat(true);
-    hbox->addWidget(pushButton_songname);
+    pushButton_albumPic = new QPushButton;
+    pushButton_albumPic->setFixedHeight(74);
+    //pushButton_albumPic->setIcon(QIcon(":/looplist.svg"));
+    pushButton_albumPic->setIconSize(QSize(70,70));
+    pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
+    pushButton_albumPic->setFlat(true);
+    hbox->addWidget(pushButton_albumPic);
     label_songname = new QLabel;
     label_songname->setStyleSheet("color:white; font-size:13px;");
     hbox->addWidget(label_songname);

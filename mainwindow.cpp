@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar->pushButton_lastPage,SIGNAL(clicked(bool)),this,SLOT(lastPage()));
     connect(titleBar->pushButton_nextPage,SIGNAL(clicked(bool)),this,SLOT(nextPage()));
     connect(titleBar->pushButton_minimize,SIGNAL(clicked(bool)),this,SLOT(showMinimized()));
-    connect(titleBar->pushButton_maximize,SIGNAL(clicked(bool)),this,SLOT(showNormalMaximized()));
+    connect(titleBar->pushButton_maximize,SIGNAL(clicked(bool)),this,SLOT(showNormalMaximize()));
     connect(titleBar->pushButton_close,SIGNAL(clicked(bool)),qApp,SLOT(quit()));
     connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     navWidget = new NavWidget;
     navWidget->listWidget->setCurrentRow(1);
     connect(navWidget->listWidget,SIGNAL(currentRowChanged(int)),this,SLOT(navPage(int)));
-    connect(navWidget->pushButton_songname,SIGNAL(clicked(bool)),this,SLOT(navLyric()));
+    connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapLyric()));
     hbox->addWidget(navWidget);
 
     stackedWidget = new QStackedWidget;
@@ -161,13 +161,15 @@ QByteArray MainWindow::postReply(QString surl,QString spost)
     return reply->readAll();
 }
 
-void MainWindow::showNormalMaximized()
+void MainWindow::showNormalMaximize()
 {
     //qDebug() << "isMaximized=" << isMaximized();
     if(isMaximized()){
         showNormal();
+        titleBar->pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
     }else{
         showMaximized();
+        titleBar->pushButton_maximize->setIcon(QIcon(":/normal.svg"));
     }
 }
 
@@ -213,13 +215,12 @@ void MainWindow::playSong(int row, int column)
     getLyric(id);
     QPixmap pixmap;
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
-    navWidget->pushButton_songname->setIcon(QIcon(pixmap));
+    navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
 }
 
 void MainWindow::durationChange(qint64 d)
 {
-    //qDebug() << "duration =" << d;
     controlBar->slider_progress->setMaximum(d);
     QTime t(0,0,0);
     t = t.addMSecs(d);
@@ -345,6 +346,7 @@ void MainWindow::mute()
 void MainWindow::search()
 {
     if(titleBar->lineEdit_search->text()!=""){
+        navWidget->listWidget->setCurrentRow(2);
         int limit = 20;
         QString surl = "http://music.163.com/api/search/pc";
         QString spost = "type=1&s=" + titleBar->lineEdit_search->text() + "&limit=" + QString::number(limit) + "&offset=" + QString::number((titleBar->lineEdit_page->text().toInt()-1)*limit);
@@ -417,7 +419,11 @@ void MainWindow::getLyric(QString id)
     textBrowser->setTextCursor(cursor);
 }
 
-void MainWindow::navLyric()
-{
-    navWidget->listWidget->setCurrentRow(3);
+void MainWindow::swapLyric()
+{    
+    if(navWidget->listWidget->currentRow()==3){
+        navWidget->listWidget->setCurrentRow(2);
+    }else{
+        navWidget->listWidget->setCurrentRow(3);
+    }
 }

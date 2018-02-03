@@ -30,5 +30,7 @@
         <file>mute.svg</file>
         <file>lastpage.svg</file>
         <file>nextpage.svg</file>
+        <file>normal.svg</file>
+        <file>rank.svg</file>
     </qresource>
 </RCC>
