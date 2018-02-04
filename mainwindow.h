@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-//#include "apimusic.h"
 #include "titlebar.h"
 #include "navwidget.h"
 #include "controlbar.h"
+#include "lyricwidget.h"
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QTableWidget>
@@ -30,6 +30,7 @@ private:
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
+    LyricWidget *lyricWidget;
     int volume;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
@@ -53,13 +54,14 @@ private slots:
     void playPause();    
     void setMPPosition();
     void setVolume();
-    void mute();
-    //void itemClick(QListWidgetItem* item);
+    void mute();    
     void navPage(int row);
     void search();
     void lastPage();
     void nextPage();
     void swapLyric();
+    void hideLyric();
+    void showHideLyric(bool);
 };
 
 #endif // MAINWINDOW_H

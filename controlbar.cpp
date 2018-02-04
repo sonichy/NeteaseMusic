@@ -77,12 +77,14 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_loop->setFlat(true);
     hbox->addWidget(pushButton_loop);
 
-    QPushButton *pushButton_lyric = new QPushButton;
+    pushButton_lyric = new QPushButton;
     pushButton_lyric->setFixedSize(30,30);
     pushButton_lyric->setIcon(QIcon(":/lyric.svg"));
     pushButton_lyric->setIconSize(QSize(25,25));
     pushButton_lyric->setFocusPolicy(Qt::NoFocus);
     pushButton_lyric->setFlat(true);
+    pushButton_lyric->setCheckable(true);
+    pushButton_lyric->setChecked(true);
     hbox->addWidget(pushButton_lyric);
 
     QPushButton *pushButton_playlist = new QPushButton;

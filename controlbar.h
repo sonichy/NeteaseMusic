@@ -12,7 +12,7 @@ class ControlBar : public QWidget
 public:
     explicit ControlBar(QWidget *parent = nullptr);
     QSlider *slider_progress, *slider_volume;
-    QPushButton *pushButton_last, *pushButton_play, *pushButton_next, *pushButton_mute;
+    QPushButton *pushButton_last, *pushButton_play, *pushButton_next, *pushButton_mute, *pushButton_lyric;
     QLabel *label_song_timeNow, *label_song_duration;
 
 signals:

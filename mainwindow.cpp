@@ -15,6 +15,7 @@
 #include <QHeaderView>
 #include <QDir>
 #include <QTextBlock>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -88,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
     controlBar = new ControlBar;
     connect(controlBar->pushButton_play,SIGNAL(pressed()),this,SLOT(playPause()));
     connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
-    //connect(controlBar,SIGNAL(playPause()),this,SLOT(playPause()));
+    connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
     connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
     connect(controlBar->slider_volume,SIGNAL(sliderReleased()),this,SLOT(setVolume()));
     vbox->addWidget(controlBar);    
@@ -100,6 +101,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
     //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
+
+    lyricWidget = new LyricWidget;
+    lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, QApplication::desktop()->height()-lyricWidget->height());
+    connect(lyricWidget->pushButton_close,SIGNAL(clicked(bool)),this,SLOT(hideLyric()));
+    lyricWidget->show();
 }
 
 MainWindow::~MainWindow()
@@ -240,17 +246,21 @@ void MainWindow::positionChange(qint64 p)
     // 非最后一句
     for(int i=0; i<lyrics.size()-1; i++){
         if(t>lyrics.at(i).time && t<lyrics.at(i+1).time){
-            //if(desktopLyric->isHidden()){
-                //label_lyric->setText(lyrics.at(i).sentence);
-            //}else{
-                //label_lyric->setText("");
-                //desktopLyric->label_lyric->setText(lyrics.at(i).sentence);
-            //}
-            //qDebug() << t << lyrics.at(i).time;
+            lyricWidget->label_lyric->setText(lyrics.at(i).sentence);
             hl=i;
             break;
         }
     }
+    //最后一句
+    if(lyrics.size()>0){
+        int j = lyrics.size()-1;
+        if(t>lyrics.at(j).time){
+            lyricWidget->label_lyric->setText(lyrics.at(j).sentence);
+            hl=j;
+        }
+    }
+
+    // 歌词文本着色
     for(int a=0; a<lyrics.size(); a++){
         QTextCursor cursor(textBrowser->document()->findBlockByLineNumber(a));
         QTextBlockFormat TBF = cursor.blockFormat();
@@ -265,7 +275,10 @@ void MainWindow::positionChange(qint64 p)
         TBF1.setForeground(QBrush(Qt::green));
         TBF1.setBackground(QBrush(QColor(255,255,255,80)));
         cursor1.setBlockFormat(TBF1);
-        textBrowser->setTextCursor(cursor1);
+        //textBrowser->setTextCursor(cursor1);
+        QScrollBar *scrollBar = textBrowser->verticalScrollBar();
+        qDebug() << "scrollBar" << scrollBar->maximum() << scrollBar->maximum()*hl/(lyrics.size()) ;
+        scrollBar->setSliderPosition(scrollBar->maximum()*hl/(lyrics.size()));
     }
 }
 
@@ -425,5 +438,20 @@ void MainWindow::swapLyric()
         navWidget->listWidget->setCurrentRow(2);
     }else{
         navWidget->listWidget->setCurrentRow(3);
+    }
+}
+
+void MainWindow::hideLyric()
+{
+    lyricWidget->hide();
+    controlBar->pushButton_lyric->setChecked(false);
+}
+
+void MainWindow::showHideLyric(bool on)
+{
+    if(on){
+        lyricWidget->show();
+    }else{
+        lyricWidget->hide();
     }
 }

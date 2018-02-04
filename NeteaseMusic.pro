@@ -11,16 +11,16 @@ SOURCES += \
     titlebar.cpp \
     controlbar.cpp \
     navwidget.cpp \
-    apimusic.cpp \
-    toplistitem.cpp
+    toplistitem.cpp \
+    lyricwidget.cpp
 
 HEADERS += \
         mainwindow.h \
     titlebar.h \
     controlbar.h \
     navwidget.h \
-    apimusic.h \
-    toplistitem.h
+    toplistitem.h \
+    lyricwidget.h
 
 RESOURCES += \
     res.qrc

@@ -32,5 +32,6 @@
         <file>nextpage.svg</file>
         <file>normal.svg</file>
         <file>rank.svg</file>
+        <file>set.svg</file>
     </qresource>
 </RCC>
