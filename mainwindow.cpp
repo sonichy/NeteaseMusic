@@ -87,7 +87,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
-    textBrowser->setAlignment(Qt::AlignCenter);
     stackedWidget->addWidget(textBrowser);
 
     vbox->addLayout(hbox);
@@ -430,7 +429,8 @@ void MainWindow::getLyric(QString id)
     QString surl = "http://music.163.com/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=" + id;
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QString slyric = json.object().value("lrc").toObject().value("lyric").toString();    
+    QString slyric = json.object().value("lrc").toObject().value("lyric").toString();
+    textBrowser->setText("");
 
     lyrics.clear();
     QStringList line = slyric.split("\n");
@@ -450,6 +450,8 @@ void MainWindow::getLyric(QString id)
     for(int i=0; i<lyrics.size(); i++){
         textBrowser->insertPlainText(lyrics.at(i).sentence + "\n");
     }
+    textBrowser->selectAll();
+    textBrowser->setAlignment(Qt::AlignCenter);
     QTextCursor cursor = textBrowser->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     textBrowser->setTextCursor(cursor);

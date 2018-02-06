@@ -54,7 +54,7 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 
     QHBoxLayout *hbox = new QHBoxLayout;
     pushButton_albumPic = new QPushButton;
-    pushButton_albumPic->setFixedHeight(74);
+    pushButton_albumPic->setFixedSize(74,74);
     //pushButton_albumPic->setIcon(QIcon(":/looplist.svg"));
     pushButton_albumPic->setIconSize(QSize(70,70));
     pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
