@@ -1,6 +1,8 @@
 #include "lyricwidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QDir>
+#include <QSettings>
 
 LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
 {
@@ -17,11 +19,14 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch();
     pushButton_set = new QPushButton;
+    pushButton_set->setFixedSize(24,24);
     pushButton_set->setIcon(QIcon(":/set.svg"));
     pushButton_set->setFocusPolicy(Qt::NoFocus);
     pushButton_set->setFlat(true);
     hbox->addWidget(pushButton_set);
+
     pushButton_close = new QPushButton;
+    pushButton_close->setFixedSize(24,24);
     pushButton_close->setIcon(QIcon(":/close.svg"));
     pushButton_close->setFocusPolicy(Qt::NoFocus);
     pushButton_close->setFlat(true);
@@ -30,7 +35,9 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
 
     label_lyric = new QLabel;
     label_lyric->setAlignment(Qt::AlignCenter);
-    label_lyric->setStyleSheet("color:green; font-size:30px;");
+    QFont font;
+    font.setPointSize(30);
+    label_lyric->setFont(font);
     vbox->addWidget(label_lyric);
 
     setLayout(vbox);
@@ -53,6 +60,14 @@ void LyricWidget::mouseMoveEvent(QMouseEvent *event)
         move(event->pos() - m_point + pos());
 }
 
+void LyricWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    //m_bPressed = false;
+    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricX", QString::number(x()));
+    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricY", QString::number(y()));
+}
+
 void LyricWidget::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
@@ -69,3 +84,10 @@ void LyricWidget::leaveEvent(QEvent *event)
     pushButton_set->setVisible(false);
 }
 
+void LyricWidget::writeSettings(QString path, QString group, QString key, QString value)
+{
+    QSettings *config = new QSettings(path, QSettings::IniFormat);
+    config->beginGroup(group);
+    config->setValue(key, value);
+    config->endGroup();
+}

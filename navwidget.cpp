@@ -5,8 +5,7 @@
 
 NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 {    
-    setStyleSheet("QPushButton {color:#ffffff;} "
-                  "QListWidget { border:none; } "
+    setStyleSheet("QListWidget { border:none; } "
                   "QListWidget::item { color:#cccccc; padding:3px;} "
                   "QListWidget::item:selected { background-color:#333333; }");
     setFixedWidth(200);
@@ -62,7 +61,7 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     pushButton_albumPic->setFlat(true);
     hbox->addWidget(pushButton_albumPic);
     label_songname = new QLabel;
-    label_songname->setStyleSheet("color:white; font-size:13px;");
+    label_songname->setStyleSheet("font-size:13px;");
     hbox->addWidget(label_songname);
     hbox->addStretch();
 

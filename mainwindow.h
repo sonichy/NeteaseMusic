@@ -30,7 +30,7 @@ private:
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
-    LyricWidget *lyricWidget;
+    LyricWidget *lyricWidget;    
     int volume;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
@@ -41,6 +41,11 @@ private:
         QString sentence;
     };
     QList<Lyric> lyrics;
+    QLineEdit *lineEdit_downloadPath;
+    QString downloadPath;
+    QString readSettings(QString path, QString group, QString key);
+    void writeSettings(QString path, QString group, QString key, QString value);
+    QPushButton *pushButton_fontcolor;
 
 private slots:
     void showNormalMaximize();
@@ -62,6 +67,10 @@ private slots:
     void swapLyric();
     void hideLyric();
     void showHideLyric(bool);
+    void on_action_settings_triggered();
+    void chooseFont();
+    void chooseFontColor();
+    void chooseDownloadPath();
 };
 
 #endif // MAINWINDOW_H

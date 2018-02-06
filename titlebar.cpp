@@ -10,8 +10,8 @@
 
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
-    setStyleSheet("QPushButton::menu-indicator{width:0px;}"
-                  "QMenu::item{color:white;} QMenu::item:selected {background-color: #333333;}"
+    setStyleSheet("QPushButton::menu-indicator{ width:0px; }"
+                  "QMenu::item:selected {background-color: #333333;}"
                   "QLineEdit { font-size:12px;  color:#cccccc; background-color:#000000; border:2px solid #000000; border-radius:10px;}"
                   "#lineEditSearch {  border-top-right-radius:0px; border-bottom-right-radius:0px; padding-left:10px;}"
                   "#pushButtonSearch { background-color:#000000; border-top-right-radius:10px; border-bottom-right-radius:10px; }");
@@ -28,7 +28,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     QLabel *label_title = new QLabel;
     label_title->setText("网易云音乐");
     label_title->setAlignment(Qt::AlignCenter);
-    label_title->setStyleSheet("color:white;font-size:15px;");
+    label_title->setStyleSheet("font-size:15px;");
     hbox->addWidget(label_title);
 
     hbox->addStretch();
@@ -151,11 +151,11 @@ void TitleBar::about()
     label = new QLabel;
     label->setText("网易云音乐 V1.0");
     label->setAlignment(Qt::AlignCenter);
-    label->setStyleSheet("color:white;font-size:20px;");
+    label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
     label->setText("         一款基于 Qt 的网易云音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n主页：http://sonichy.gitee.io\n音乐版权：网页云音乐\n参考：\nhttps://github.com/gcmwhite/CloudMusic-Bc-5\nhttp://get.ftqq.com/7430.get");
-    label->setStyleSheet("color:white;font-size:15px;");
+    label->setStyleSheet("font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);
     vbox->addWidget(label);

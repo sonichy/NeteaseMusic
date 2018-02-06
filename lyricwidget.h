@@ -18,8 +18,10 @@ private:
     QPoint m_point;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
+    void writeSettings(QString path, QString group, QString key, QString value);
 
 signals:
 
