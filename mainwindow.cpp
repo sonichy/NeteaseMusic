@@ -240,6 +240,7 @@ void MainWindow::playSong(int row, int column)
     player->setMedia(QUrl(surl));
     player->play();
     navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
+    lyricWidget->label_lyric->setText(tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text());
     getLyric(id);
     QPixmap pixmap;
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
