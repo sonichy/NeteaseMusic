@@ -61,6 +61,7 @@ private slots:
     void setVolume();
     void mute();    
     void navPage(int row);
+    void preSearch();
     void search();
     void lastPage();
     void nextPage();

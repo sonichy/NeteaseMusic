@@ -39,8 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->setContentsMargins(0,0,0,0);
 
     titleBar = new TitleBar;
-    connect(titleBar->pushButton_search,SIGNAL(clicked(bool)),this,SLOT(search()));
-    connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(search()));
+    connect(titleBar->pushButton_search,SIGNAL(clicked(bool)),this,SLOT(preSearch()));
+    connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(preSearch()));
     connect(titleBar->lineEdit_page,SIGNAL(returnPressed()),this,SLOT(search()));
     connect(titleBar->pushButton_lastPage,SIGNAL(clicked(bool)),this,SLOT(lastPage()));
     connect(titleBar->pushButton_nextPage,SIGNAL(clicked(bool)),this,SLOT(nextPage()));
@@ -377,6 +377,12 @@ void MainWindow::mute()
         controlBar->pushButton_mute->setIcon(QIcon(":/mute.svg"));
         controlBar->slider_volume->setValue(0);
     }
+}
+
+void MainWindow::preSearch()
+{
+    titleBar->lineEdit_page->setText("1");
+    search();
 }
 
 void MainWindow::search()
