@@ -6,7 +6,8 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     setStyleSheet("QSlider::sub-page:Horizontal { background-color: #9F2425; }"
                   "QSlider::add-page:Horizontal { background-color: #333333; }"
                   "QSlider::groove:Horizontal { background: transparent; height:4px; }"
-                  "QSlider::handle:Horizontal { width:13px; height:13px; border:1px solid #ffffff; border-radius:7px; background:#9F2425; margin: -5px 0px -5px 0px; }");
+                  "QSlider::handle:Horizontal { width:13px; height:13px; border:1px solid #ffffff; border-radius:7px; background:#9F2425; margin: -5px 0px -5px 0px; }"
+                  "QToolTip{border-style:none; background-color:black;}");
 
     //setFixedHeight(50);
     QHBoxLayout *hbox = new QHBoxLayout;
