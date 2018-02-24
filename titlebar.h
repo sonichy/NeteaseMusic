@@ -15,6 +15,9 @@ public:
     QPushButton *pushButton_search, *pushButton_lastPage, *pushButton_nextPage, *pushButton_minimize, *pushButton_maximize, *pushButton_close;
     QLineEdit *lineEdit_search, *lineEdit_page;
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+
 private:
     QPoint relativePos;
     void mousePressEvent(QMouseEvent *event);

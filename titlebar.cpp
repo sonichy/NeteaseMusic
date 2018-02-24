@@ -56,6 +56,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_lastPage->setFlat(true);
     pushButton_lastPage->setFocusPolicy(Qt::NoFocus);
     pushButton_lastPage->setCursor(Qt::PointingHandCursor);
+    pushButton_lastPage->installEventFilter(this);
     hbox->addWidget(pushButton_lastPage);
 
     lineEdit_page = new QLineEdit;
@@ -74,6 +75,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_nextPage->setFlat(true);
     pushButton_nextPage->setFocusPolicy(Qt::NoFocus);
     pushButton_nextPage->setCursor(Qt::PointingHandCursor);
+    pushButton_nextPage->installEventFilter(this);
     hbox->addWidget(pushButton_nextPage);
 
     hbox->addStretch();
@@ -85,14 +87,14 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
     QMenu *submenu = new QMenu(this);
-    QAction *login=new QAction("登录",this);
-    QAction *about=new QAction("关于",this);
-    QAction *quit=new QAction("退出",this);
+    QAction *login = new QAction("登录",this);
+    QAction *about = new QAction("关于",this);
+    QAction *quit = new QAction("退出",this);
     submenu->addAction(login);
     submenu->addAction(about);
     submenu->addAction(quit);
     pushButton_menu->setMenu(submenu);
-//    connect(login,SIGNAL(triggered()),this,SLOT(login()));
+//  connect(login,SIGNAL(triggered()),this,SLOT(login()));
     connect(about,SIGNAL(triggered()),this,SLOT(about()));
     connect(quit,SIGNAL(triggered()),qApp,SLOT(quit()));
     hbox->addWidget(pushButton_menu);
@@ -102,7 +104,8 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_minimize->setIcon(QIcon(":/minimize.svg"));
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
-    pushButton_minimize->setFocusPolicy(Qt::NoFocus);    
+    pushButton_minimize->setFocusPolicy(Qt::NoFocus);
+    pushButton_minimize->installEventFilter(this);
     hbox->addWidget(pushButton_minimize);
 
     pushButton_maximize = new QPushButton;
@@ -110,7 +113,8 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
-    pushButton_maximize->setFocusPolicy(Qt::NoFocus);    
+    pushButton_maximize->setFocusPolicy(Qt::NoFocus);
+    pushButton_maximize->installEventFilter(this);
     hbox->addWidget(pushButton_maximize);
 
     pushButton_close = new QPushButton;
@@ -119,6 +123,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);
+    pushButton_close->installEventFilter(this);
     hbox->addWidget(pushButton_close);
 
     setLayout(hbox);
@@ -134,8 +139,19 @@ void TitleBar::mousePressEvent(QMouseEvent *event)
 
 void TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
-    //qDebug() << event->globalPos() << "-" << relativePos << "=" << event->globalPos() - relativePos;
     emit moveMainWindow(event->globalPos() - relativePos);
+}
+
+bool TitleBar::eventFilter(QObject *obj, QEvent *event)
+{
+    // qDebug() << obj << event;
+    if ( (obj == pushButton_lastPage || obj == pushButton_nextPage || obj == pushButton_minimize || obj == pushButton_maximize || obj == pushButton_close) && event->type() == QEvent::MouseMove ) {
+        return true;    // filter
+    } else {
+        return false;
+    }
+    // pass the event on to the parent class
+    return QWidget::eventFilter(obj, event);
 }
 
 void TitleBar::about()
