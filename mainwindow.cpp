@@ -92,7 +92,9 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
+    connect(controlBar->pushButton_last,SIGNAL(pressed()),this,SLOT(playLast()));
     connect(controlBar->pushButton_play,SIGNAL(pressed()),this,SLOT(playPause()));
+    connect(controlBar->pushButton_next,SIGNAL(pressed()),this,SLOT(playNext()));
     connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
     connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
     connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
@@ -590,4 +592,31 @@ void MainWindow::writeSettings(QString path, QString group, QString key, QString
     config->beginGroup(group);
     config->setValue(key, value);
     config->endGroup();
+}
+
+void MainWindow::playLast()
+{
+    int row = tableWidget_playlist->currentRow();
+    qDebug() << row;
+    if (row != -1) {
+        if (row > 0) {
+            row--;
+            playSong(row,0);
+            tableWidget_playlist->setCurrentCell(row,0);
+        }
+    }
+}
+
+void MainWindow::playNext()
+{
+    int row = tableWidget_playlist->currentRow();
+    int rc = tableWidget_playlist->rowCount();
+    qDebug() << row << rc;
+    if (row != -1) {
+        if (row < rc-1) {
+            row++;
+            playSong(row,0);
+            tableWidget_playlist->setCurrentCell(row,0);
+        }
+    }
 }

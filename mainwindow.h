@@ -72,6 +72,8 @@ private slots:
     void chooseFont();
     void chooseFontColor();
     void chooseDownloadPath();
+    void playLast();
+    void playNext();
 };
 
 #endif // MAINWINDOW_H

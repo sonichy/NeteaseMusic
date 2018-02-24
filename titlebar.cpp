@@ -47,6 +47,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_search->setFlat(true);
     pushButton_search->setFocusPolicy(Qt::NoFocus);
     pushButton_search->setCursor(Qt::PointingHandCursor);
+    pushButton_search->installEventFilter(this);
     hbox->addWidget(pushButton_search);
 
     pushButton_lastPage = new QPushButton;
@@ -145,7 +146,7 @@ void TitleBar::mouseMoveEvent(QMouseEvent *event)
 bool TitleBar::eventFilter(QObject *obj, QEvent *event)
 {
     // qDebug() << obj << event;
-    if ( (obj == pushButton_lastPage || obj == pushButton_nextPage || obj == pushButton_minimize || obj == pushButton_maximize || obj == pushButton_close) && event->type() == QEvent::MouseMove ) {
+    if ( (obj == pushButton_search || obj == pushButton_lastPage || obj == pushButton_nextPage || obj == pushButton_minimize || obj == pushButton_maximize || obj == pushButton_close) && event->type() == QEvent::MouseMove ) {
         return true;    // filter
     } else {
         return false;
