@@ -145,8 +145,8 @@ void TitleBar::mouseMoveEvent(QMouseEvent *event)
 
 bool TitleBar::eventFilter(QObject *obj, QEvent *event)
 {
-    // qDebug() << obj << event;
-    if ( (obj == pushButton_search || obj == pushButton_lastPage || obj == pushButton_nextPage || obj == pushButton_minimize || obj == pushButton_maximize || obj == pushButton_close) && event->type() == QEvent::MouseMove ) {
+    qDebug() << obj->metaObject()->className();
+    if ( QString(obj->metaObject()->className()) == "QPushButton" && event->type() == QEvent::MouseMove ) {
         return true;    // filter
     } else {
         return false;
