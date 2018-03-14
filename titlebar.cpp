@@ -21,14 +21,14 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     hbox->setSpacing(0);
 
     QLabel *label_icon = new QLabel;
-    label_icon->setFixedSize(30,30);
+    label_icon->setFixedSize(36,36);
     label_icon->setPixmap(QPixmap(":/icont.svg").scaled(label_icon->size(),Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
 
     QLabel *label_title = new QLabel;
     label_title->setText("网易云音乐");
     label_title->setAlignment(Qt::AlignCenter);
-    label_title->setStyleSheet("font-size:15px;");
+    label_title->setStyleSheet("font-size:17px;");
     hbox->addWidget(label_title);
 
     hbox->addStretch();
@@ -145,7 +145,7 @@ void TitleBar::mouseMoveEvent(QMouseEvent *event)
 
 bool TitleBar::eventFilter(QObject *obj, QEvent *event)
 {
-    qDebug() << obj->metaObject()->className();
+    //qDebug() << obj->metaObject()->className();
     if ( QString(obj->metaObject()->className()) == "QPushButton" && event->type() == QEvent::MouseMove ) {
         return true;    // filter
     } else {

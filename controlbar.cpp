@@ -96,6 +96,14 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_playlist->setFlat(true);
     hbox->addWidget(pushButton_playlist);
 
+    pushButton_fullscreen = new QPushButton;
+    pushButton_fullscreen->setFixedSize(30,30);
+    pushButton_fullscreen->setIcon(QIcon(":/fullscreen.svg"));
+    pushButton_fullscreen->setIconSize(QSize(25,25));
+    pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
+    pushButton_fullscreen->setFlat(true);
+    hbox->addWidget(pushButton_fullscreen);
+
     setLayout(hbox);
 }
 

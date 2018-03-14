@@ -22,6 +22,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QSettings>
+#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
     setStyleSheet("color:white; background-color:#232326;");
+    connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()),this, SLOT(exitFullscreen()));
 
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
@@ -50,12 +52,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
-    QLabel *label_titleBar_bottom = new QLabel;
+    label_titleBar_bottom = new QLabel;
     label_titleBar_bottom->setFixedHeight(2);
     label_titleBar_bottom->setStyleSheet("background-color:#9F2425");
     vbox->addWidget(label_titleBar_bottom);
 
-    //apiMusic = new APIMusic;
     createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
@@ -97,8 +98,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlBar->pushButton_next,SIGNAL(pressed()),this,SLOT(playNext()));
     connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
     connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
-    connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
-    connect(controlBar->slider_volume,SIGNAL(sliderReleased()),this,SLOT(setVolume()));
+    connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
+    connect(controlBar->slider_progress,SIGNAL(sliderMoved(int)),this,SLOT(sliderProgressMoved(int)));
+    connect(controlBar->slider_volume,SIGNAL(sliderMoved(int)),this,SLOT(sliderVolumeMoved(int)));
     vbox->addWidget(controlBar);    
     widget->setLayout(vbox);
 
@@ -261,7 +263,7 @@ void MainWindow::durationChange(qint64 d)
 void MainWindow::positionChange(qint64 p)
 {    
     //qDebug() << "position =" << p;
-    controlBar->slider_progress->setValue(p);
+    if(!controlBar->slider_progress->isSliderDown())controlBar->slider_progress->setValue(p);
     QTime t(0,0,0);
     t = t.addMSecs(p);
     controlBar->label_song_timeNow->setText(t.toString("mm:ss"));
@@ -309,7 +311,7 @@ void MainWindow::positionChange(qint64 p)
 
 void MainWindow::volumeChange(int v)
 {
-    controlBar->slider_volume->setValue(v);
+    if(!controlBar->slider_volume->isSliderDown()) controlBar->slider_volume->setValue(v);
     controlBar->slider_volume->setToolTip(QString::number(v));
 }
 
@@ -356,15 +358,15 @@ void MainWindow::navPage(int row)
     }
 }
 
-void MainWindow::setMPPosition()
+void MainWindow::sliderProgressMoved(int p)
 {
-    player->setPosition(controlBar->slider_progress->value());
+    player->setPosition(p);
 }
 
 
-void MainWindow::setVolume()
+void MainWindow::sliderVolumeMoved(int v)
 {
-    player->setVolume(controlBar->slider_volume->value());
+    player->setVolume(v);
 }
 
 void MainWindow::mute()
@@ -618,5 +620,29 @@ void MainWindow::playNext()
             playSong(row,0);
             tableWidget_playlist->setCurrentCell(row,0);
         }
+    }
+}
+
+void MainWindow::enterFullscreen()
+{
+    if(navWidget->listWidget->currentRow()==3){
+        showFullScreen();
+        titleBar->hide();
+        label_titleBar_bottom->hide();
+        navWidget->hide();
+        controlBar->hide();
+        lyricWidget->hide();
+    }
+}
+
+void MainWindow::exitFullscreen()
+{
+    if(isFullScreen()){
+        showNormal();
+        titleBar->show();
+        label_titleBar_bottom->show();
+        navWidget->show();
+        controlBar->show();
+        if(controlBar->pushButton_lyric->isChecked())lyricWidget->show();
     }
 }

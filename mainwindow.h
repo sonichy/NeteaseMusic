@@ -21,7 +21,7 @@ public:
     ~MainWindow();
 
 private:
-    //APIMusic *apiMusic;
+    QLabel *label_titleBar_bottom;
     TitleBar *titleBar;
     NavWidget *navWidget;
     QStackedWidget *stackedWidget;
@@ -57,8 +57,8 @@ private slots:
     void stateChange(QMediaPlayer::State state);
     void volumeChange(int v);
     void playPause();    
-    void setMPPosition();
-    void setVolume();
+    void sliderProgressMoved(int p);
+    void sliderVolumeMoved(int v);
     void mute();    
     void navPage(int row);
     void preSearch();
@@ -74,6 +74,8 @@ private slots:
     void chooseDownloadPath();
     void playLast();
     void playNext();
+    void enterFullscreen();
+    void exitFullscreen();
 };
 
 #endif // MAINWINDOW_H

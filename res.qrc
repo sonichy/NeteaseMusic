@@ -33,5 +33,6 @@
         <file>normal.svg</file>
         <file>rank.svg</file>
         <file>set.svg</file>
+        <file>fullscreen.svg</file>
     </qresource>
 </RCC>
