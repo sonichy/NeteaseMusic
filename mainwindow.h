@@ -45,7 +45,7 @@ private:
     QString downloadPath;
     QString readSettings(QString path, QString group, QString key);
     void writeSettings(QString path, QString group, QString key, QString value);
-    QPushButton *pushButton_fontcolor;
+    QPushButton *pushButton_fontcolor, *pushButton_path;
 
 private slots:
     void showNormalMaximize();
@@ -68,7 +68,7 @@ private slots:
     void swapLyric();
     void hideLyric();
     void showHideLyric(bool);
-    void on_action_settings_triggered();
+    void settings();
     void chooseFont();
     void chooseFontColor();
     void chooseDownloadPath();
@@ -76,6 +76,9 @@ private slots:
     void playNext();
     void enterFullscreen();
     void exitFullscreen();
+    void dialogDownload();
+    void download(QString surl, QString filepath);
+    void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
 };
 
 #endif // MAINWINDOW_H

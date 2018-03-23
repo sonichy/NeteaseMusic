@@ -88,13 +88,21 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_lyric->setChecked(true);
     hbox->addWidget(pushButton_lyric);
 
-    QPushButton *pushButton_playlist = new QPushButton;
-    pushButton_playlist->setFixedSize(30,30);
-    pushButton_playlist->setIcon(QIcon(":/playlist.svg"));
-    pushButton_playlist->setIconSize(QSize(25,25));
-    pushButton_playlist->setFocusPolicy(Qt::NoFocus);
-    pushButton_playlist->setFlat(true);
-    hbox->addWidget(pushButton_playlist);
+//    QPushButton *pushButton_playlist = new QPushButton;
+//    pushButton_playlist->setFixedSize(30,30);
+//    pushButton_playlist->setIcon(QIcon(":/playlist.svg"));
+//    pushButton_playlist->setIconSize(QSize(25,25));
+//    pushButton_playlist->setFocusPolicy(Qt::NoFocus);
+//    pushButton_playlist->setFlat(true);
+//    hbox->addWidget(pushButton_playlist);
+
+    pushButton_download = new QPushButton;
+    pushButton_download->setFixedSize(30,30);
+    pushButton_download->setIcon(QIcon(":/download.svg"));
+    pushButton_download->setIconSize(QSize(25,25));
+    pushButton_download->setFocusPolicy(Qt::NoFocus);
+    pushButton_download->setFlat(true);
+    hbox->addWidget(pushButton_download);
 
     pushButton_fullscreen = new QPushButton;
     pushButton_fullscreen->setFixedSize(30,30);

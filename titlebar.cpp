@@ -88,16 +88,15 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
     QMenu *submenu = new QMenu(this);
-    QAction *login = new QAction("登录",this);
-    QAction *about = new QAction("关于",this);
-    QAction *quit = new QAction("退出",this);
-    submenu->addAction(login);
-    submenu->addAction(about);
-    submenu->addAction(quit);
+    action_set = new QAction("设置",this);
+    QAction *action_about = new QAction("关于",this);
+    QAction *action_quit = new QAction("退出",this);
+    submenu->addAction(action_set);
+    submenu->addAction(action_about);
+    submenu->addAction(action_quit);
     pushButton_menu->setMenu(submenu);
-//  connect(login,SIGNAL(triggered()),this,SLOT(login()));
-    connect(about,SIGNAL(triggered()),this,SLOT(about()));
-    connect(quit,SIGNAL(triggered()),qApp,SLOT(quit()));
+    connect(action_about,SIGNAL(triggered()),this,SLOT(about()));
+    connect(action_quit,SIGNAL(triggered()),qApp,SLOT(quit()));
     hbox->addWidget(pushButton_menu);
 
     pushButton_minimize = new QPushButton;
