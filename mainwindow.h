@@ -68,7 +68,7 @@ private slots:
     void swapLyric();
     void hideLyric();
     void showHideLyric(bool);
-    void settings();
+    void dialogSet();
     void chooseFont();
     void chooseFontColor();
     void chooseDownloadPath();

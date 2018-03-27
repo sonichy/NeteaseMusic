@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar->pushButton_minimize,SIGNAL(pressed()),this,SLOT(showMinimized()));
     connect(titleBar->pushButton_maximize,SIGNAL(pressed()),this,SLOT(showNormalMaximize()));
     connect(titleBar->pushButton_close,SIGNAL(pressed()),qApp,SLOT(quit()));
-    connect(titleBar->action_set,SIGNAL(triggered()),this,SLOT(settings()));
+    connect(titleBar->action_set,SIGNAL(triggered()),this,SLOT(dialogSet()));
     connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
 
     lyricWidget = new LyricWidget;
-    connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(settings()));
+    connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(dialogSet()));
     connect(lyricWidget->pushButton_close,SIGNAL(pressed()),this,SLOT(hideLyric()));
     QString slx = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricX");
     QString sly = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricY");
@@ -501,23 +501,22 @@ void MainWindow::showHideLyric(bool on)
     }
 }
 
-void MainWindow::settings()
+void MainWindow::dialogSet()
 {
-    QDialog *dialog_settings = new QDialog(this);
-    dialog_settings->setWindowTitle("设置");
-    dialog_settings->setFixedSize(300,200);
-    dialog_settings->setStyleSheet("QLineEdit{border:1px solid gray;}");
-    QVBoxLayout *vbox = new QVBoxLayout;
-    QHBoxLayout *hbox = new QHBoxLayout;
+    QDialog *dialog_set = new QDialog(this);
+    dialog_set->setWindowTitle("设置");
+    dialog_set->setFixedSize(300,200);
+    dialog_set->setStyleSheet("QLineEdit{border:1px solid gray;}");
+    QGridLayout *gridLayout = new QGridLayout;
     QLabel *label = new QLabel("歌词");
-    hbox->addWidget(label);
+    gridLayout->addWidget(label,0,0,1,1);
     QPushButton *pushButton_font = new QPushButton;
     QString sfont = lyricWidget->label_lyric->font().family() + "," + QString::number(lyricWidget->label_lyric->font().pointSize()) + "," + lyricWidget->label_lyric->font().weight() + "," + lyricWidget->label_lyric->font().italic();
     pushButton_font->setText(sfont);
     pushButton_font->setFocusPolicy(Qt::NoFocus);
     //pushButton_font->setFlat(true);
     connect(pushButton_font,SIGNAL(pressed()),this,SLOT(chooseFont()));
-    hbox->addWidget(pushButton_font);
+    gridLayout->addWidget(pushButton_font,0,1,1,1);
     pushButton_fontcolor = new QPushButton;
     pushButton_fontcolor->setText("■");
     pushButton_fontcolor->setFocusPolicy(Qt::NoFocus);
@@ -527,12 +526,10 @@ void MainWindow::settings()
     plt.setColor(QPalette::ButtonText, brush.color());
     pushButton_fontcolor->setPalette(plt);
     connect(pushButton_fontcolor,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
-    hbox->addWidget(pushButton_fontcolor);
-    vbox->addLayout(hbox);
+    gridLayout->addWidget(pushButton_fontcolor,0,2,1,1);
 
-    hbox = new QHBoxLayout;
     label = new QLabel("保存路径");
-    hbox->addWidget(label);
+    gridLayout->addWidget(label,1,0,1,1);
     lineEdit_downloadPath = new QLineEdit;    
     downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
 //    if(downloadPath == ""){
@@ -540,16 +537,15 @@ void MainWindow::settings()
 //    }else{
         lineEdit_downloadPath->setText(downloadPath);
 //    }
-    hbox->addWidget(lineEdit_downloadPath);
+    gridLayout->addWidget(lineEdit_downloadPath,1,1,1,1);
     QPushButton *pushButton_downloadPath = new QPushButton("选择路径");
     pushButton_downloadPath->setObjectName("SettingDialogPath");
     pushButton_downloadPath->setFocusPolicy(Qt::NoFocus);
     //pushButton_downloadPath->setFlat(true);
     connect(pushButton_downloadPath,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));
-    hbox->addWidget(pushButton_downloadPath);
-    vbox->addLayout(hbox);
-    dialog_settings->setLayout(vbox);
-    dialog_settings->show();
+    gridLayout->addWidget(pushButton_downloadPath,1,2,1,1);
+    dialog_set->setLayout(gridLayout);
+    dialog_set->show();
 }
 
 void MainWindow::chooseFont()
@@ -725,13 +721,24 @@ void MainWindow::download(QString surl, QString filepath)
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request(url);
     QNetworkReply *reply = NAM->get(request);
-    QEventLoop loop;
+    QEventLoop loop;    
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+    //跳转URL处理  https://blog.csdn.net/mingzznet/article/details/9724371
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    qDebug() << "HttpStatusCode" << statusCode;
+    surl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
+    qDebug() << "redirect" << surl;
+    url.setUrl(surl);
+    request.setUrl(url);
+    reply = NAM->get(request);
     connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
     QFile file(filepath);
     file.open(QIODevice::WriteOnly);
     file.write(reply->readAll());
+    //qDebug() << reply->readAll();
     file.close();
     //ui->pushButton_download->setText("↓");
     controlBar->pushButton_download->setEnabled(true);
@@ -739,12 +746,12 @@ void MainWindow::download(QString surl, QString filepath)
 
 void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    //ui->pushButton_download->setText(QString("%1%").arg(bytesReceived*100/bytesTotal));
+    //ui->pushButton_download->setText(QString("%1%").arg(bytesReceived*100/bytesTotal));    
     float p = (float)bytesReceived/bytesTotal;
     controlBar->pushButton_download->setStyleSheet(QString("background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0,"
                                                    "stop:0 rgba(48, 194, 124, 255), stop:%1 rgba(48, 194, 124, 255),"
                                                    "stop:%2 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));")
                                       .arg(p-0.001)
                                       .arg(p));
-    //qDebug() << p << controlBar->pushButton_download->styleSheet();
+    qDebug() << p << controlBar->pushButton_download->styleSheet();
 }
