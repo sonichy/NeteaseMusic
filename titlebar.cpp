@@ -10,6 +10,7 @@
 
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
+    MLBP = false;
     setStyleSheet("QPushButton::menu-indicator{ width:0px; }"
                   "QMenu::item:selected {background-color: #333333;}"
                   "QLineEdit { font-size:12px;  color:#cccccc; background-color:#000000; border:2px solid #000000; border-radius:10px;}"
@@ -87,6 +88,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_menu->setIconSize(QSize(20,20));
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
+    pushButton_menu->setCursor(Qt::PointingHandCursor);
     QMenu *submenu = new QMenu(this);
     action_set = new QAction("设置",this);
     QAction *action_about = new QAction("关于",this);
@@ -98,6 +100,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     connect(action_about,SIGNAL(triggered()),this,SLOT(about()));
     connect(action_quit,SIGNAL(triggered()),qApp,SLOT(quit()));
     hbox->addWidget(pushButton_menu);
+    hbox->addSpacing(5);
 
     pushButton_minimize = new QPushButton;
     pushButton_minimize->setFixedSize(24,24);
@@ -105,8 +108,10 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
     pushButton_minimize->setFocusPolicy(Qt::NoFocus);
+    pushButton_minimize->setCursor(Qt::PointingHandCursor);
     pushButton_minimize->installEventFilter(this);
     hbox->addWidget(pushButton_minimize);
+    hbox->addSpacing(5);
 
     pushButton_maximize = new QPushButton;
     pushButton_maximize->setFixedSize(24,24);
@@ -114,8 +119,10 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
     pushButton_maximize->setFocusPolicy(Qt::NoFocus);
+    pushButton_maximize->setCursor(Qt::PointingHandCursor);
     pushButton_maximize->installEventFilter(this);
     hbox->addWidget(pushButton_maximize);
+    hbox->addSpacing(5);
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
@@ -123,6 +130,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);
+    pushButton_close->setCursor(Qt::PointingHandCursor);
     pushButton_close->installEventFilter(this);
     hbox->addWidget(pushButton_close);
 
@@ -132,6 +140,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton){
+        MLBP = true;
         //qDebug() << "mousePress" << event->pos();
         relativePos = event->pos();
     }
@@ -139,7 +148,17 @@ void TitleBar::mousePressEvent(QMouseEvent *event)
 
 void TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
+    if(MLBP){
+    setCursor(Qt::ClosedHandCursor);
     emit moveMainWindow(event->globalPos() - relativePos);
+    }
+}
+
+void TitleBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    MLBP = false;
+    setCursor(Qt::ArrowCursor);
 }
 
 bool TitleBar::eventFilter(QObject *obj, QEvent *event)

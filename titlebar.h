@@ -22,8 +22,10 @@ protected:
 
 private:
     QPoint relativePos;
+    bool MLBP;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 signals:
     void moveMainWindow(QPoint);

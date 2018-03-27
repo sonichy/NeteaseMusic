@@ -54,11 +54,11 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 
     QHBoxLayout *hbox = new QHBoxLayout;
     pushButton_albumPic = new QPushButton;
-    pushButton_albumPic->setFixedSize(74,74);
-    //pushButton_albumPic->setIcon(QIcon(":/looplist.svg"));
+    pushButton_albumPic->setFixedSize(74,74);    
     pushButton_albumPic->setIconSize(QSize(70,70));
     pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
     pushButton_albumPic->setFlat(true);
+    pushButton_albumPic->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_albumPic);
     label_songname = new QLabel;
     label_songname->setStyleSheet("font-size:13px;");
@@ -66,6 +66,5 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     hbox->addStretch();
 
     vbox->addLayout(hbox);
-
     setLayout(vbox);
 }
