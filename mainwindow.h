@@ -25,8 +25,7 @@ private:
     QLabel *label_titleBar_bottom;
     TitleBar *titleBar;
     NavWidget *navWidget;
-    QStackedWidget *stackedWidget;
-    //QWidget *toplistWidget;
+    QStackedWidget *stackedWidget;   
     QScrollArea *rankScrollArea;
     QWidget *playlistWidget;
     QLabel *label_playlistTitle;
@@ -75,6 +74,7 @@ private slots:
     void dialogSet();
     void chooseFont();
     void chooseFontColor();
+    void openDownloadPath();
     void chooseDownloadPath();
     void playLast();
     void playNext();
