@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     stackedWidget = new QStackedWidget;
     stackedWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    stackedWidget->addWidget(toplistWidget);
+    stackedWidget->addWidget(rankScrollArea);
 
     playlistWidget = new QWidget;
     QVBoxLayout *vboxPL = new QVBoxLayout;
@@ -164,11 +164,14 @@ void MainWindow::moveMe(QPoint point)
 
 void MainWindow::createWidgetToplist()
 {
-    toplistWidget = new QWidget;
+    rankScrollArea = new QScrollArea;
+    QWidget *toplistWidget = new QWidget;
+    rankScrollArea->setWidget(toplistWidget);
+    rankScrollArea->setWidgetResizable(true);   //关键语句
+    QGridLayout *gridLayout = new QGridLayout(toplistWidget);
     QString surl = "http://music.163.com/api/toplist";
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     qDebug() << surl;
-    QGridLayout *gridLayout = new QGridLayout(toplistWidget);
     QJsonArray list = json.object().value("list").toArray();
     //qDebug() << list;
     for(int i=0; i< list.size(); i++){
@@ -364,7 +367,7 @@ void MainWindow::navPage(int row)
     qDebug() << "nav" << row;
     switch (row) {
     case 1:
-        stackedWidget->setCurrentWidget(toplistWidget);
+        stackedWidget->setCurrentWidget(rankScrollArea);
         break;
     case 2:
         stackedWidget->setCurrentWidget(playlistWidget);

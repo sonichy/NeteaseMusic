@@ -11,6 +11,7 @@
 #include <QMediaPlayer>
 #include <QTextBrowser>
 #include <QTime>
+#include <QScrollArea>
 
 class MainWindow : public QMainWindow
 {
@@ -25,7 +26,8 @@ private:
     TitleBar *titleBar;
     NavWidget *navWidget;
     QStackedWidget *stackedWidget;
-    QWidget *toplistWidget;
+    //QWidget *toplistWidget;
+    QScrollArea *rankScrollArea;
     QWidget *playlistWidget;
     QLabel *label_playlistTitle;
     QTableWidget *tableWidget_playlist;
