@@ -114,8 +114,3 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     setLayout(hbox);
 }
-
-//void ControlBar::emitPlayPause()
-//{
-//    emit playPause();
-//}

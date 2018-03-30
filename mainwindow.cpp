@@ -70,6 +70,12 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     stackedWidget->addWidget(toplistWidget);
 
+    playlistWidget = new QWidget;
+    QVBoxLayout *vboxPL = new QVBoxLayout;
+    vboxPL->setMargin(0);
+    label_playlistTitle = new QLabel;
+    label_playlistTitle->setFont(QFont("Timers",20,50));
+    vboxPL->addWidget(label_playlistTitle);
     tableWidget_playlist = new QTableWidget;
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -84,7 +90,10 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
     tableWidget_playlist->setStyleSheet("QTableView { color:white; selection-background-color:#e6e6e6; }");
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
-    stackedWidget->addWidget(tableWidget_playlist);
+    vboxPL->addWidget(tableWidget_playlist);
+    playlistWidget->setLayout(vboxPL);
+    stackedWidget->addWidget(playlistWidget);
+
     hbox->addWidget(stackedWidget);
 
     textBrowser = new QTextBrowser;
@@ -106,12 +115,15 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addWidget(controlBar);    
     widget->setLayout(vbox);
 
-    player = new QMediaPlayer;
+    player = new QMediaPlayer;    
     connect(player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
     connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChange(qint64)));
     connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
     //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
+    QString vol = readSettings(QDir::currentPath() + "/config.ini", "config", "Volume");
+    if (vol=="") vol="100";
+    player->setVolume(vol.toInt());
 
     lyricWidget = new LyricWidget;
     connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(dialogSet()));
@@ -159,15 +171,14 @@ void MainWindow::createWidgetToplist()
     QGridLayout *gridLayout = new QGridLayout(toplistWidget);
     QJsonArray list = json.object().value("list").toArray();
     //qDebug() << list;
-    for(int r=0; r< list.size()/5; r++){
-        for(int c=0; c<5; c++){
-            QString coverImgUrl = list[r*5+c].toObject().value("coverImgUrl").toString();
-            ToplistItem *toplistItem = new ToplistItem;
-            toplistItem->setImage(coverImgUrl);
-            toplistItem->id = list[r*5+c].toObject().value("id").toDouble();
-            connect(toplistItem,SIGNAL(send(long)),this,SLOT(createPlaylist(long)));
-            gridLayout->addWidget(toplistItem,r,c);
-        }
+    for(int i=0; i< list.size(); i++){
+        QString coverImgUrl = list[i].toObject().value("coverImgUrl").toString();
+        ToplistItem *toplistItem = new ToplistItem;
+        toplistItem->setImage(coverImgUrl);
+        toplistItem->id = list[i].toObject().value("id").toDouble();
+        toplistItem->name = list[i].toObject().value("name").toString();
+        connect(toplistItem,SIGNAL(send(long,QString)),this,SLOT(createPlaylist(long,QString)));
+        gridLayout->addWidget(toplistItem,i/5,i%5);
     }
 }
 
@@ -212,10 +223,10 @@ void MainWindow::showNormalMaximize()
     }
 }
 
-void MainWindow::createPlaylist(long id)
-{
-    //stackedWidget->setCurrentWidget(tableWidget_playlist);
+void MainWindow::createPlaylist(long id,QString name)
+{    
     navWidget->listWidget->setCurrentRow(2);
+    label_playlistTitle->setText(name);
     tableWidget_playlist->setRowCount(0);
     qDebug() << id;
     QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
@@ -356,7 +367,7 @@ void MainWindow::navPage(int row)
         stackedWidget->setCurrentWidget(toplistWidget);
         break;
     case 2:
-        stackedWidget->setCurrentWidget(tableWidget_playlist);
+        stackedWidget->setCurrentWidget(playlistWidget);
         break;
     case 3:
         textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
@@ -374,6 +385,7 @@ void MainWindow::sliderProgressMoved(int p)
 void MainWindow::sliderVolumeMoved(int v)
 {
     player->setVolume(v);
+    writeSettings(QDir::currentPath() + "/config.ini", "config", "Volume", QString::number(v));
 }
 
 void MainWindow::mute()
@@ -400,6 +412,7 @@ void MainWindow::search()
 {
     if(titleBar->lineEdit_search->text()!=""){
         navWidget->listWidget->setCurrentRow(2);
+        label_playlistTitle->setText("搜索：" + titleBar->lineEdit_search->text());
         int limit = 20;
         QString surl = "http://music.163.com/api/search/pc";
         QString spost = "type=1&s=" + titleBar->lineEdit_search->text() + "&limit=" + QString::number(limit) + "&offset=" + QString::number((titleBar->lineEdit_page->text().toInt()-1)*limit);

@@ -12,7 +12,7 @@ ToplistItem::ToplistItem(QWidget *parent) : QWidget(parent)
     pushButton->setFlat(true);
     pushButton->setIconSize(pushButton->size());
     pushButton->setCursor(Qt::PointingHandCursor);
-    connect(pushButton,SIGNAL(pressed()),this,SLOT(sendId()));
+    connect(pushButton,SIGNAL(pressed()),this,SLOT(itemPressed()));
     vbox->addWidget(pushButton);
     setLayout(vbox);
 }
@@ -34,7 +34,7 @@ void ToplistItem::replyImage(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-void ToplistItem::sendId()
+void ToplistItem::itemPressed()
 {
-    emit send(id);
+    emit send(id,name);
 }

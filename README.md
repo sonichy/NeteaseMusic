@@ -4,7 +4,7 @@
 音乐版权归网易所有。  
 
 
-![alt](preview.png)  
+![alt](toplist.png)  
 
 ![alt](songlist.png)  
 

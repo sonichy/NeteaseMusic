@@ -12,16 +12,17 @@ public:
     explicit ToplistItem(QWidget *parent = nullptr);
     void setImage(QString surl);
     long id;
+    QString name;
 
 private:
     QPushButton *pushButton;
 
 signals:
-    void send(long id);
+    void send(long id,QString name);
 
 private slots:
     void replyImage(QNetworkReply *reply);
-    void sendId();
+    void itemPressed();
 };
 
 #endif // TOPLISTITEM_H
