@@ -21,7 +21,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
+private:    
     QLabel *label_titleBar_bottom;
     TitleBar *titleBar;
     NavWidget *navWidget;
@@ -49,6 +49,7 @@ private:
     QString readSettings(QString path, QString group, QString key);
     void writeSettings(QString path, QString group, QString key, QString value);
     QPushButton *pushButton_fontcolor, *pushButton_path;
+
 
 private slots:
     void showNormalMaximize();

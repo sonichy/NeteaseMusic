@@ -45,11 +45,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar->pushButton_search,SIGNAL(pressed()),this,SLOT(preSearch()));
     connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(preSearch()));
     connect(titleBar->lineEdit_page,SIGNAL(returnPressed()),this,SLOT(search()));
-    connect(titleBar->pushButton_lastPage,SIGNAL(pressed()),this,SLOT(lastPage()));
-    connect(titleBar->pushButton_nextPage,SIGNAL(pressed()),this,SLOT(nextPage()));
-    connect(titleBar->pushButton_minimize,SIGNAL(pressed()),this,SLOT(showMinimized()));
-    connect(titleBar->pushButton_maximize,SIGNAL(pressed()),this,SLOT(showNormalMaximize()));
-    connect(titleBar->pushButton_close,SIGNAL(pressed()),qApp,SLOT(quit()));
+    connect(titleBar->pushButton_lastPage,SIGNAL(released()),this,SLOT(lastPage()));
+    connect(titleBar->pushButton_nextPage,SIGNAL(released()),this,SLOT(nextPage()));
+    connect(titleBar->pushButton_minimize,SIGNAL(released()),this,SLOT(showMinimized()));
+    connect(titleBar->pushButton_maximize,SIGNAL(released()),this,SLOT(showNormalMaximize()));
+    connect(titleBar->pushButton_close,SIGNAL(released()),qApp,SLOT(quit()));
     connect(titleBar->action_set,SIGNAL(triggered()),this,SLOT(dialogSet()));
     connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);

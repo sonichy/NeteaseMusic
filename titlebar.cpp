@@ -149,8 +149,8 @@ void TitleBar::mousePressEvent(QMouseEvent *event)
 void TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
     if(MLBP){
-    setCursor(Qt::ClosedHandCursor);
-    emit moveMainWindow(event->globalPos() - relativePos);
+        setCursor(Qt::ClosedHandCursor);
+        emit moveMainWindow(event->globalPos() - relativePos);
     }
 }
 
