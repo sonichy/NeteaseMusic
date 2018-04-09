@@ -48,7 +48,7 @@ private:
     QString downloadPath;
     QString readSettings(QString path, QString group, QString key);
     void writeSettings(QString path, QString group, QString key, QString value);
-    QPushButton *pushButton_fontcolor, *pushButton_path;
+    QPushButton *pushButton_fontcolorleft, *pushButton_fontcolorright, *pushButton_path;
 
 
 private slots:

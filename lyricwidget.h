@@ -9,10 +9,15 @@
 class LyricWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit LyricWidget(QWidget *parent = nullptr);
     QPushButton *pushButton_set, *pushButton_close;
     QLabel *label_lyric;
+    QString text;
+    QFont font;
+    QColor color_left, color_right;
+    float lp;
 
 private:
     QPoint m_point;
@@ -22,10 +27,7 @@ private:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
     void writeSettings(QString path, QString group, QString key, QString value);
-
-signals:
-
-public slots:
+    void paintEvent(QPaintEvent *event);
 
 };
 
