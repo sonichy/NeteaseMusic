@@ -541,12 +541,12 @@ void MainWindow::dialogSet()
     QLabel *label = new QLabel("歌词字体");
     label->setAlignment(Qt::AlignCenter);
     gridLayout->addWidget(label,0,0,1,1);
-    QPushButton *pushButton_font = new QPushButton;
+    pushButton_font = new QPushButton;
     QString sfont = lyricWidget->font.family() + "," + QString::number(lyricWidget->font.pointSize()) + "," + lyricWidget->font.weight() + "," + lyricWidget->font.italic();
     pushButton_font->setText(sfont);
     pushButton_font->setFocusPolicy(Qt::NoFocus);    
     connect(pushButton_font,SIGNAL(pressed()),this,SLOT(chooseFont()));
-    gridLayout->addWidget(pushButton_font,0,1,1,1);
+    gridLayout->addWidget(pushButton_font,0,1,1,2);
 
     //歌词颜色
     label = new QLabel("歌词颜色");
@@ -595,15 +595,12 @@ void MainWindow::dialogSet()
 void MainWindow::chooseFont()
 {
     bool ok;
-    QFont font = QFontDialog::getFont(&ok, lyricWidget->label_lyric->font(), this, "选择字体");
+    QFont font = QFontDialog::getFont(&ok, lyricWidget->font, this, "选择字体");
     if(ok){
-       lyricWidget->label_lyric->setFont(font);
+       lyricWidget->font = font;
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
+       pushButton_font->setText(sfont);
        writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
-       lyricWidget->label_lyric->adjustSize();
-       //qDebug() << "label_after" << desktopLyric->ui->label_lyric->size();
-       lyricWidget->resize(lyricWidget->label_lyric->size());
-       //qDebug() << "window" << desktopLyric->size();
     }
 }
 

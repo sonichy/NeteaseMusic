@@ -18,6 +18,7 @@ public:
     QFont font;
     QColor color_left, color_right;
     float lp;
+    bool isMouseOn, isMLBD;
 
 private:
     QPoint m_point;

@@ -22,7 +22,7 @@ protected:
 
 private:
     QPoint relativePos;
-    bool MLBP;
+    bool isMLBD;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
