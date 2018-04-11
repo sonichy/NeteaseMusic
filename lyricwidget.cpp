@@ -107,21 +107,22 @@ void LyricWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter p(this);
     p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(Qt::NoPen);
     if (isMouseOn) {
-        p.setPen(Qt::NoPen);
-        p.setBrush(QColor(255,255,255,50));
+        p.setBrush(QColor(255,255,255,20));
         p.drawRect(rect());
     }
-    QRegion left(0,30,width()*lp,height());//左边唱过的部分,这里的值我是随便弄的作效果
-    QRegion right(width()*lp,30,width(),height()); //右边未唱过的部分
+    QFontMetrics FM(font);
+    QRegion left(0,30,FM.boundingRect(text).width()*lp,height());//左边唱过的部分,这里的值我是随便弄的作效果
+    QRegion right(FM.boundingRect(text).width()*lp,30,width(),height()); //右边未唱过的部分
     QPainterPath path;
-    path.addText(0,80,font,text); //歌词文字作为路径
-    p.setBrush(color_left);       //文字填充颜色
-    p.setPen(color_left);         //文字边框颜色
-    p.setClipRegion(left);        //设置栽剪区域,Painter只在其中绘图
-    p.drawPath(path);             //画出左边歌词
+    path.addText(0,75,font,text);   //歌词文字作为路径
+    p.setBrush(color_left);         //文字填充颜色
+    //p.setPen(QColor(Qt::black));  //文字边框颜色
+    p.setClipRegion(left);          //设置栽剪区域,Painter只在其中绘图
+    p.drawPath(path);               //画出左边歌词
     p.setBrush(color_right);        //改变填充字体颜色为绿色
-    p.setPen(color_right);          //改变字体边框为绿色
-    p.setClipRegion(right);       //设置栽剪区域为右边未唱过的部分
-    p.drawPath(path);             //画右边未唱过的歌词
+    //p.setPen(QColor(Qt::black));  //改变字体边框为绿色
+    p.setClipRegion(right);         //设置栽剪区域为右边未唱过的部分
+    p.drawPath(path);               //画右边未唱过的歌词
 }

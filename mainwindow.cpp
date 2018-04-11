@@ -306,6 +306,10 @@ void MainWindow::positionChange(qint64 p)
             lyricWidget->text = lyrics.at(i).sentence;
             lyricWidget->lp = (float)(lyrics.at(i).time.msecsTo(t)) / lyrics.at(i).time.msecsTo(lyrics.at(i+1).time);
             //qDebug() << lyrics.at(i).time.msecsTo(t) << lyrics.at(i).time.msecsTo(lyrics.at(i+1).time) << lyricWidget->lp;
+            QFontMetrics FM(lyricWidget->font);
+            if(FM.boundingRect(lyricWidget->text).width() > lyricWidget->width()){
+                lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,26));
+            }
             lyricWidget->update();
             hl=i;
             break;
