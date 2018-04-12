@@ -13,9 +13,7 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     isMouseOn = false;
     isMLBD = false;
     setAttribute(Qt::WA_TranslucentBackground,true);
-    setWindowFlags(Qt::WindowStaysOnTopHint);
-    setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(Qt::X11BypassWindowManagerHint);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Dialog | Qt::X11BypassWindowManagerHint);
 
     QVBoxLayout *vbox = new QVBoxLayout;    
     vbox->setSpacing(0);
@@ -62,6 +60,7 @@ void LyricWidget::mouseMoveEvent(QMouseEvent *event)
     if (isMLBD) {
         setCursor(Qt::ClosedHandCursor);
         move(event->pos() - m_point + pos());
+        //qDebug() << event->pos() << m_point << pos();
     }
 }
 
@@ -108,13 +107,15 @@ void LyricWidget::paintEvent(QPaintEvent *event)
     QPainter p(this);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
+    // 鼠标悬停绘制透明背景
     if (isMouseOn) {
         p.setBrush(QColor(255,255,255,20));
         p.drawRect(rect());
     }
+    // 根据字体计算歌词宽度
     QFontMetrics FM(font);
-    QRegion left(0,30,FM.boundingRect(text).width()*lp,height());//左边唱过的部分,这里的值我是随便弄的作效果
-    QRegion right(FM.boundingRect(text).width()*lp,30,width(),height()); //右边未唱过的部分
+    QRegion left(0,30,FM.boundingRect(text).width()*lp,height());        //左边唱过的区域
+    QRegion right(FM.boundingRect(text).width()*lp,30,width(),height()); //右边未唱过的区域
     QPainterPath path;
     path.addText(0,75,font,text);   //歌词文字作为路径
     p.setBrush(color_left);         //文字填充颜色

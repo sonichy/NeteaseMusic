@@ -1,3 +1,4 @@
+#pragma execution_character_set("utf-8")
 #include "mainwindow.h"
 #include "toplistitem.h"
 #include <QApplication>
@@ -76,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     vboxPL->setMargin(0);
     label_playlistTitle = new QLabel;
     label_playlistTitle->setFont(QFont("Timers",20,50));
+    label_playlistTitle->setMargin(5);
     vboxPL->addWidget(label_playlistTitle);
     tableWidget_playlist = new QTableWidget;
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -136,8 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
     }else{
         lyricWidget->move(slx.toInt(),sly.toInt());
     }
-    //qDebug() << "歌词坐标" << slx << sly;
-    //QColor color_left(readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft"));
+    //qDebug() << "歌词坐标" << slx << sly;    
     QString SColorLeft = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft");
     if(SColorLeft == "") SColorLeft = "#FF0000";
     lyricWidget->color_left = QColor(SColorLeft);
@@ -145,9 +146,14 @@ MainWindow::MainWindow(QWidget *parent)
     if(SColorRight == "") SColorRight = "#00FF00";
     lyricWidget->color_right = QColor(SColorRight);
     QString sfont = readSettings(QDir::currentPath() + "/config.ini", "config", "Font");
-    if(sfont!=""){
-        QStringList SLFont = sfont.split(",");
-        //lyricWidget->label_lyric->setFont(QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt()));
+    if (sfont == "") {
+        QFont font = qApp->font();
+        font.setPointSize(40);
+        lyricWidget->font = font;
+        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
+        writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
+    } else {
+        QStringList SLFont = sfont.split(",");        
         lyricWidget->font = QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
     }
     lyricWidget->show();
@@ -271,15 +277,16 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
-    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
-    //lyricWidget->label_lyric->setText(tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text());
+    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());    
     lyricWidget->text = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
+    lyricWidget->resize(700,100);
     lyricWidget->update();
     getLyric(id);
     QPixmap pixmap;
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
     navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
+    qDebug() << QDir::currentPath() + "/cover.jpg";
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -561,9 +568,7 @@ void MainWindow::dialogSet()
     pushButton_fontcolorleft->setObjectName("LyricFontColorLeft");
     pushButton_fontcolorleft->setText("■已播放");
     pushButton_fontcolorleft->setFocusPolicy(Qt::NoFocus);
-    QPalette plt;
-    plt.setColor(QPalette::ButtonText, lyricWidget->color_left);
-    pushButton_fontcolorleft->setPalette(plt);
+    pushButton_fontcolorleft->setStyleSheet("color:" + QString("rgb(%1,%2,%3)").arg(lyricWidget->color_left.red()).arg(lyricWidget->color_left.green()).arg(lyricWidget->color_left.blue()));
     connect(pushButton_fontcolorleft,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
     gridLayout->addWidget(pushButton_fontcolorleft,1,1,1,1);
 
@@ -571,8 +576,7 @@ void MainWindow::dialogSet()
     pushButton_fontcolorright->setObjectName("LyricFontColorRight");
     pushButton_fontcolorright->setText("■未播放");
     pushButton_fontcolorright->setFocusPolicy(Qt::NoFocus);
-    plt.setColor(QPalette::ButtonText, lyricWidget->color_right);
-    pushButton_fontcolorright->setPalette(plt);
+    pushButton_fontcolorright->setStyleSheet("color:" + QString("rgb(%1,%2,%3)").arg(lyricWidget->color_right.red()).arg(lyricWidget->color_right.green()).arg(lyricWidget->color_right.blue()));
     connect(pushButton_fontcolorright,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
     gridLayout->addWidget(pushButton_fontcolorright,1,2,1,1);
 
