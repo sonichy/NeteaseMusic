@@ -13,7 +13,7 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     isMouseOn = false;
     isMLBD = false;
     setAttribute(Qt::WA_TranslucentBackground,true);
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Dialog | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint);
 
     QVBoxLayout *vbox = new QVBoxLayout;    
     vbox->setSpacing(0);
