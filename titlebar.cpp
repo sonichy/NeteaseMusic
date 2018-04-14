@@ -15,8 +15,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     setStyleSheet("QPushButton::menu-indicator{ width:0px; }"
                   "QMenu::item:selected {background-color: #333333;}"
                   "QLineEdit { font-size:12px;  color:#cccccc; background-color:#000000; border:2px solid #000000; border-radius:10px;}"
-                  "#lineEditSearch {  border-top-right-radius:0px; border-bottom-right-radius:0px; padding-left:10px;}"
-                  "#pushButtonSearch { background-color:#000000; border-top-right-radius:10px; border-bottom-right-radius:10px; }");
+                  "#lineEditSearch { padding-left:10px; }");
     setFixedHeight(50);
 
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -38,19 +37,11 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     lineEdit_search = new QLineEdit;
     lineEdit_search->setObjectName("lineEditSearch");
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
-    lineEdit_search->setFixedWidth(200);    
+    lineEdit_search->setFixedWidth(200);
+    action_search = new QAction(this);
+    action_search->setIcon(QIcon(":/search.svg"));
+    lineEdit_search->addAction(action_search,QLineEdit::TrailingPosition);
     hbox->addWidget(lineEdit_search);
-
-    pushButton_search = new QPushButton;
-    pushButton_search->setObjectName("pushButtonSearch");
-    pushButton_search->setFixedSize(24,24);
-    pushButton_search->setIcon(QIcon(":/search.svg"));
-    pushButton_search->setIconSize(QSize(20,20));
-    pushButton_search->setFlat(true);
-    pushButton_search->setFocusPolicy(Qt::NoFocus);
-    pushButton_search->setCursor(Qt::PointingHandCursor);
-    pushButton_search->installEventFilter(this);
-    hbox->addWidget(pushButton_search);
 
     pushButton_lastPage = new QPushButton;
     pushButton_lastPage->setFixedSize(24,24);
