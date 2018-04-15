@@ -569,7 +569,7 @@ void MainWindow::dialogSet()
     pushButton_fontcolorleft->setObjectName("LyricFontColorLeft");
     pushButton_fontcolorleft->setText("■已播放");
     pushButton_fontcolorleft->setFocusPolicy(Qt::NoFocus);
-    pushButton_fontcolorleft->setStyleSheet("color:" + QString("rgb(%1,%2,%3)").arg(lyricWidget->color_left.red()).arg(lyricWidget->color_left.green()).arg(lyricWidget->color_left.blue()));
+    pushButton_fontcolorleft->setStyleSheet("color:" + lyricWidget->color_left.name());
     connect(pushButton_fontcolorleft,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
     gridLayout->addWidget(pushButton_fontcolorleft,1,1,1,1);
 
@@ -577,7 +577,7 @@ void MainWindow::dialogSet()
     pushButton_fontcolorright->setObjectName("LyricFontColorRight");
     pushButton_fontcolorright->setText("■未播放");
     pushButton_fontcolorright->setFocusPolicy(Qt::NoFocus);
-    pushButton_fontcolorright->setStyleSheet("color:" + QString("rgb(%1,%2,%3)").arg(lyricWidget->color_right.red()).arg(lyricWidget->color_right.green()).arg(lyricWidget->color_right.blue()));
+    pushButton_fontcolorright->setStyleSheet("color:" + lyricWidget->color_right.name());
     connect(pushButton_fontcolorright,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
     gridLayout->addWidget(pushButton_fontcolorright,1,2,1,1);
 
@@ -590,13 +590,13 @@ void MainWindow::dialogSet()
     lineEdit_downloadPath = new QLineEdit;    
     downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
     lineEdit_downloadPath->setText(downloadPath);
-    gridLayout->addWidget(lineEdit_downloadPath,2,1,1,1);
-    QPushButton *pushButton_chooseDownloadPath = new QPushButton("选择路径");
-    pushButton_chooseDownloadPath->setObjectName("SettingDialogChooseDownloadPath");
-    pushButton_chooseDownloadPath->setFocusPolicy(Qt::NoFocus);
-    //pushButton_downloadPath->setFlat(true);
-    connect(pushButton_chooseDownloadPath,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));
-    gridLayout->addWidget(pushButton_chooseDownloadPath,2,2,1,1);
+    QAction *action_browse = new QAction(this);
+    action_browse->setObjectName("SettingDialogChooseDownloadPath");
+    action_browse->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
+    connect(action_browse,SIGNAL(triggered(bool)),this,SLOT(chooseDownloadPath()));
+    lineEdit_downloadPath->addAction(action_browse,QLineEdit::TrailingPosition);
+    gridLayout->addWidget(lineEdit_downloadPath,2,1,1,2);
+
     dialog_set->setLayout(gridLayout);
     dialog_set->show();
 }
@@ -605,7 +605,7 @@ void MainWindow::chooseFont()
 {
     bool ok;
     QFont font = QFontDialog::getFont(&ok, lyricWidget->font, this, "选择字体");
-    if(ok){
+    if (ok) {
        lyricWidget->font = font;
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
        pushButton_font->setText(sfont);
@@ -641,13 +641,13 @@ void MainWindow::chooseFontColor()
 void MainWindow::chooseDownloadPath()
 {
     downloadPath = QFileDialog::getExistingDirectory(this,"保存路径",downloadPath, QFileDialog::ShowDirsOnly |QFileDialog::DontResolveSymlinks);
-    if(downloadPath != ""){
+    if (downloadPath != "") {
         QObject *object = sender();
         qDebug() << object->objectName() << downloadPath;
-        if(object->objectName() == "SettingDialogChooseDownloadPath"){
+        if (object->objectName() == "SettingDialogChooseDownloadPath") {
             lineEdit_downloadPath->setText(downloadPath);
         }
-        if(object->objectName() == "DownloadDialogPath"){
+        if (object->objectName() == "DownloadDialogPath") {
             pushButton_path->setText(downloadPath);
             pushButton_path->setToolTip(downloadPath);
         }
@@ -705,7 +705,7 @@ void MainWindow::playNext()
 
 void MainWindow::enterFullscreen()
 {
-    if(navWidget->listWidget->currentRow()==3){
+    if (navWidget->listWidget->currentRow()==3) {
         showFullScreen();
         titleBar->hide();
         label_titleBar_bottom->hide();
@@ -717,13 +717,13 @@ void MainWindow::enterFullscreen()
 
 void MainWindow::exitFullscreen()
 {
-    if(isFullScreen()){
+    if (isFullScreen()) {
         showNormal();
         titleBar->show();
         label_titleBar_bottom->show();
         navWidget->show();
         controlBar->show();
-        if(controlBar->pushButton_lyric->isChecked())lyricWidget->show();
+        if (controlBar->pushButton_lyric->isChecked()) lyricWidget->show();
     }
 }
 
@@ -769,8 +769,7 @@ void MainWindow::dialogDownload()
     int result = dialog->exec();
     if (result == QDialog::Accepted) {
         download(lineEdit_url->text(), pushButton_path->text() + "/" + lineEdit_songname->text() + "." + QFileInfo(lineEdit_url->text()).suffix());
-    }else
-    if (result == QDialog::Rejected) {
+    } else if (result == QDialog::Rejected) {
         dialog->close();
     }
 }
