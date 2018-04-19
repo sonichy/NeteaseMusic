@@ -8,6 +8,7 @@
 class ToplistItem : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit ToplistItem(QWidget *parent = nullptr);
     void setImage(QString surl);
@@ -23,6 +24,7 @@ signals:
 private slots:
     void replyImage(QNetworkReply *reply);
     void itemPressed();
+
 };
 
 #endif // TOPLISTITEM_H

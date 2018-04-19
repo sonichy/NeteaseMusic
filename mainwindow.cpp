@@ -670,10 +670,11 @@ QString MainWindow::readSettings(QString path, QString group, QString key)
 
 void MainWindow::writeSettings(QString path, QString group, QString key, QString value)
 {
-    QSettings *config = new QSettings(path, QSettings::IniFormat);
-    config->beginGroup(group);
-    config->setValue(key, value);
-    config->endGroup();
+    QSettings *settings = new QSettings(path, QSettings::IniFormat);
+    settings->setIniCodec("UTF-8");
+    settings->beginGroup(group);
+    settings->setValue(key, value);
+    settings->endGroup();
 }
 
 void MainWindow::playLast()
