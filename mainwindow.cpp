@@ -662,19 +662,20 @@ void MainWindow::openDownloadPath()
 
 QString MainWindow::readSettings(QString path, QString group, QString key)
 {
-    QSettings setting(path, QSettings::IniFormat);
-    setting.beginGroup(group);
-    QString value = setting.value(key).toString();
+    QSettings settings(path, QSettings::IniFormat);
+    settings.setIniCodec("UTF-8");
+    settings.beginGroup(group);
+    QString value = settings.value(key).toString();
     return value;
 }
 
 void MainWindow::writeSettings(QString path, QString group, QString key, QString value)
 {
-    QSettings *settings = new QSettings(path, QSettings::IniFormat);
-    settings->setIniCodec("UTF-8");
-    settings->beginGroup(group);
-    settings->setValue(key, value);
-    settings->endGroup();
+    QSettings settings(path, QSettings::IniFormat);
+    settings.setIniCodec("UTF-8");
+    settings.beginGroup(group);
+    settings.setValue(key, value);
+    settings.endGroup();
 }
 
 void MainWindow::playLast()
