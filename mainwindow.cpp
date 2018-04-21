@@ -29,6 +29,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    prevRow = 1;
+    navRow = 1;
     setWindowIcon(QIcon(":/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
@@ -65,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     navWidget = new NavWidget;
     navWidget->listWidget->setCurrentRow(1);
     connect(navWidget->listWidget,SIGNAL(currentRowChanged(int)),this,SLOT(navPage(int)));
-    connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapLyric()));
+    connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapPlaylist()));
     hbox->addWidget(navWidget);
 
     stackedWidget = new QStackedWidget;
@@ -83,11 +85,12 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableWidget_playlist->setColumnCount(6);
+    tableWidget_playlist->setColumnCount(8);
     tableWidget_playlist->setColumnHidden(4,true);
     tableWidget_playlist->setColumnHidden(5,true);
+    tableWidget_playlist->setColumnHidden(6,true);
     QStringList header;
-    header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面";
+    header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面" << "mvid" << "MV";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
     tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
     tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
@@ -96,14 +99,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
     vboxPL->addWidget(tableWidget_playlist);
     playlistWidget->setLayout(vboxPL);
-    stackedWidget->addWidget(playlistWidget);
-
-    hbox->addWidget(stackedWidget);
+    stackedWidget->addWidget(playlistWidget);    
 
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
     stackedWidget->addWidget(textBrowser);
 
+    videoWidget = new QVideoWidget;
+    stackedWidget->addWidget(videoWidget);
+
+    hbox->addWidget(stackedWidget);
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
@@ -119,7 +124,8 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addWidget(controlBar);    
     widget->setLayout(vbox);
 
-    player = new QMediaPlayer;    
+    player = new QMediaPlayer;
+    player->setVideoOutput(videoWidget);
     connect(player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
     connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChange(qint64)));
     connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
@@ -202,6 +208,8 @@ QByteArray MainWindow::getReply(QString surl)
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
+    request.setRawHeader("Referer", "http://music.163.com/");
+    //request.setRawHeader("Cookie", "appver=1.5.0.75771;");
     QNetworkReply *reply = NAM->get(request);
     QEventLoop loop;
     connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
@@ -266,6 +274,19 @@ void MainWindow::createPlaylist(long id, QString name)
         tableWidget_playlist->setItem(i,3,TWI);
         tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
         tableWidget_playlist->setItem(i,5,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("picUrl").toString()));
+        int mvid = tracks[i].toObject().value("mvid").toInt();
+        tableWidget_playlist->setItem(i,6,new QTableWidgetItem(QString::number(mvid)));
+        if(mvid != 0){
+            QPushButton *pushButton_MV = new QPushButton;
+            pushButton_MV->setFixedSize(24,24);
+            pushButton_MV->setIcon(QIcon(":/video.svg"));
+            pushButton_MV->setIconSize(QSize(24,24));
+            pushButton_MV->setFocusPolicy(Qt::NoFocus);
+            pushButton_MV->setFlat(true);
+            pushButton_MV->setCursor(Qt::PointingHandCursor);
+            connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
+            tableWidget_playlist->setCellWidget(i,7,pushButton_MV);
+        }
     }
     tableWidget_playlist->resizeColumnsToContents();
 }
@@ -287,7 +308,7 @@ void MainWindow::playSong(int row, int column)
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
     navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
-    qDebug() << QDir::currentPath() + "/cover.jpg";
+    qDebug() << QDir::currentPath() + "/cover.jpg";    
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -390,6 +411,8 @@ void MainWindow::playPause()
 void MainWindow::navPage(int row)
 {
     qDebug() << "nav" << row;
+    prevRow = navRow;
+    navRow = row;
     switch (row) {
     case 1:
         stackedWidget->setCurrentWidget(rankScrollArea);
@@ -398,8 +421,11 @@ void MainWindow::navPage(int row)
         stackedWidget->setCurrentWidget(playlistWidget);
         break;
     case 3:
-        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+        textBrowser->setStyleSheet("QTextBrowser { color:white; border-image:url(cover.jpg); }");
         stackedWidget->setCurrentWidget(textBrowser);
+        break;
+    case 10:
+        stackedWidget->setCurrentWidget(videoWidget);
         break;
     }
 }
@@ -462,6 +488,19 @@ void MainWindow::search()
             tableWidget_playlist->setItem(i,3,TWI);
             tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(songs[i].toObject().value("id").toInt())));
             tableWidget_playlist->setItem(i,5,new QTableWidgetItem(songs[i].toObject().value("album").toObject().value("picUrl").toString()));
+            int mvid = songs[i].toObject().value("mvid").toInt();
+            tableWidget_playlist->setItem(i,6,new QTableWidgetItem(QString::number(mvid)));
+            if(mvid != 0){
+                QPushButton *pushButton_MV = new QPushButton;
+                pushButton_MV->setFixedSize(24,24);
+                pushButton_MV->setIcon(QIcon(":/video.svg"));
+                pushButton_MV->setIconSize(QSize(24,24));
+                pushButton_MV->setFocusPolicy(Qt::NoFocus);
+                pushButton_MV->setFlat(true);
+                pushButton_MV->setCursor(Qt::PointingHandCursor);
+                connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
+                tableWidget_playlist->setCellWidget(i,7,pushButton_MV);
+            }
         }
         tableWidget_playlist->resizeColumnsToContents();
     }
@@ -518,13 +557,9 @@ void MainWindow::getLyric(QString id)
     textBrowser->setTextCursor(cursor);
 }
 
-void MainWindow::swapLyric()
-{    
-    if(navWidget->listWidget->currentRow()==3){
-        navWidget->listWidget->setCurrentRow(2);
-    }else{
-        navWidget->listWidget->setCurrentRow(3);
-    }
+void MainWindow::swapPlaylist()
+{
+    navWidget->listWidget->setCurrentRow(prevRow);
 }
 
 void MainWindow::hideLyric()
@@ -706,8 +741,8 @@ void MainWindow::playNext()
 }
 
 void MainWindow::enterFullscreen()
-{
-    if (navWidget->listWidget->currentRow()==3) {
+{ 
+    if (navRow==3 || navRow==10) {
         showFullScreen();
         titleBar->hide();
         label_titleBar_bottom->hide();
@@ -817,4 +852,36 @@ void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
                                       .arg(p-0.001)
                                       .arg(p));
     qDebug() << p << controlBar->pushButton_download->styleSheet();
+}
+
+void MainWindow::pushButtonMVClicked()
+{
+    QPushButton *senderObj = qobject_cast<QPushButton*>(sender());
+    if (senderObj == nullptr) {
+        return;
+    }
+    QModelIndex index = tableWidget_playlist->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
+    int row = index.row();
+    tableWidget_playlist->setCurrentCell(row,0);
+    QString songname = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
+    navWidget->label_songname->setText(songname + "\n" + tableWidget_playlist->item(row,3)->text());
+    QString mvid = tableWidget_playlist->item(row,6)->text();
+    QString surl = "http://music.163.com/api/mv/detail/?type=mp4&id=" + mvid;
+    qDebug() << "MV:" <<  surl;
+    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
+    qDebug() << json;
+    QString mvurl = json.object().value("data").toObject().value("brs").toObject().value("720").toString();
+    if (mvurl == "") {
+        mvurl = json.object().value("data").toObject().value("brs").toObject().value("480").toString();
+    }
+    if (mvurl == "") {
+        mvurl = json.object().value("data").toObject().value("brs").toObject().value("240").toString();
+    }
+    qDebug() << mvurl;
+    lyricWidget->hide();
+    controlBar->pushButton_lyric->setChecked(false);
+    stackedWidget->setCurrentWidget(videoWidget);
+    player->setMedia(QUrl(mvurl));
+    player->play();
+    navWidget->listWidget->setCurrentRow(10);
 }

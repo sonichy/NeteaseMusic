@@ -12,6 +12,7 @@
 #include <QTextBrowser>
 #include <QTime>
 #include <QScrollArea>
+#include <QVideoWidget>
 
 class MainWindow : public QMainWindow
 {
@@ -34,7 +35,7 @@ private:
     ControlBar *controlBar;
     QMediaPlayer *player;
     LyricWidget *lyricWidget;    
-    int volume;
+    int volume, navRow, prevRow;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
     QByteArray postReply(QString surl,QString spost);
@@ -49,7 +50,7 @@ private:
     QString readSettings(QString path, QString group, QString key);
     void writeSettings(QString path, QString group, QString key, QString value);
     QPushButton *pushButton_font, *pushButton_fontcolorleft, *pushButton_fontcolorright, *pushButton_path;
-
+    QVideoWidget *videoWidget;
 
 private slots:
     void showNormalMaximize();
@@ -69,7 +70,7 @@ private slots:
     void search();
     void lastPage();
     void nextPage();
-    void swapLyric();
+    void swapPlaylist();
     void hideLyric();
     void showHideLyric(bool);
     void dialogSet();
@@ -84,6 +85,7 @@ private slots:
     void dialogDownload();
     void download(QString surl, QString filepath);
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void pushButtonMVClicked();
 };
 
 #endif // MAINWINDOW_H
