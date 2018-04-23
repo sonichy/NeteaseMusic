@@ -106,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->addWidget(textBrowser);
 
     videoWidget = new QVideoWidget;
+    videoWidget->setStyleSheet("background-color:black;");
     stackedWidget->addWidget(videoWidget);
 
     hbox->addWidget(stackedWidget);
