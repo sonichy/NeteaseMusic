@@ -18,6 +18,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_last->setIconSize(QSize(35,35));
     pushButton_last->setFocusPolicy(Qt::NoFocus);
     pushButton_last->setFlat(true);
+    pushButton_last->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_last);
 
     pushButton_play = new QPushButton;
@@ -26,7 +27,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_play->setIconSize(QSize(42,42));
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
-    //connect(pushButton_play,SIGNAL(pressed()),this,SLOT(emitPlayPause()));
+    pushButton_play->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_play);
 
     pushButton_next = new QPushButton;
@@ -35,6 +36,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_next->setIconSize(QSize(35,35));
     pushButton_next->setFocusPolicy(Qt::NoFocus);
     pushButton_next->setFlat(true);
+    pushButton_next->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_next);
 
     label_song_timeNow = new QLabel;
@@ -47,6 +49,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     slider_progress->setOrientation(Qt::Horizontal);
     slider_progress->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     slider_progress->setFocusPolicy(Qt::NoFocus);
+    //slider_progress->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(slider_progress);
 
     label_song_duration = new QLabel;
@@ -60,6 +63,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_mute->setIconSize(QSize(20,20));
     pushButton_mute->setFocusPolicy(Qt::NoFocus);
     pushButton_mute->setFlat(true);
+    pushButton_mute->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_mute);
 
     slider_volume = new QSlider;
@@ -68,6 +72,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     slider_volume->setValue(100);
     slider_volume->setFixedWidth(100);
     slider_volume->setFocusPolicy(Qt::NoFocus);
+    //slider_volume->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(slider_volume);
 
     QPushButton *pushButton_loop = new QPushButton;
@@ -76,6 +81,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_loop->setIconSize(QSize(25,25));
     pushButton_loop->setFocusPolicy(Qt::NoFocus);
     pushButton_loop->setFlat(true);
+    pushButton_loop->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_loop);
 
     pushButton_lyric = new QPushButton;
@@ -86,6 +92,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_lyric->setFlat(true);
     pushButton_lyric->setCheckable(true);
     pushButton_lyric->setChecked(true);
+    pushButton_lyric->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_lyric);
 
 //    QPushButton *pushButton_playlist = new QPushButton;
@@ -94,6 +101,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 //    pushButton_playlist->setIconSize(QSize(25,25));
 //    pushButton_playlist->setFocusPolicy(Qt::NoFocus);
 //    pushButton_playlist->setFlat(true);
+//    pushButton_playlist->setCursor(Qt::PointingHandCursor);
 //    hbox->addWidget(pushButton_playlist);
 
     pushButton_download = new QPushButton;
@@ -102,6 +110,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_download->setIconSize(QSize(25,25));
     pushButton_download->setFocusPolicy(Qt::NoFocus);
     pushButton_download->setFlat(true);
+    pushButton_download->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_download);
 
     pushButton_fullscreen = new QPushButton;
@@ -110,6 +119,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_fullscreen->setIconSize(QSize(25,25));
     pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
     pushButton_fullscreen->setFlat(true);
+    pushButton_fullscreen->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_fullscreen);
 
     setLayout(hbox);

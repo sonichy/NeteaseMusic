@@ -819,32 +819,38 @@ void MainWindow::download(QString surl, QString filepath)
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request(url);
     QNetworkReply *reply = NAM->get(request);
-    QEventLoop loop;    
+    controlBar->pushButton_download->setIcon(QIcon());
+    QEventLoop loop;
+    if(!surl.contains("http://music.163.com/song/media/outer/url?id="))
+        connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
+    loop.exec();    
     //跳转URL处理  https://blog.csdn.net/mingzznet/article/details/9724371
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    qDebug() << "HttpStatusCode" << statusCode;
-    surl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
-    qDebug() << "redirect" << surl;
-    url.setUrl(surl);
-    request.setUrl(url);
-    reply = NAM->get(request);
-    connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
+    if(surl.contains("http://music.163.com/song/media/outer/url?id=")){
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        qDebug() << "HttpStatusCode" << statusCode;
+        surl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
+        qDebug() << "redirect" << surl;
+        url.setUrl(surl);
+        request.setUrl(url);
+        reply = NAM->get(request);
+        connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+    }
     QFile file(filepath);
     file.open(QIODevice::WriteOnly);
     file.write(reply->readAll());
     //qDebug() << reply->readAll();
     file.close();
-    //ui->pushButton_download->setText("↓");
+    controlBar->pushButton_download->setIcon(QIcon(":/download.svg"));
+    controlBar->pushButton_download->setText("");
     controlBar->pushButton_download->setEnabled(true);
 }
 
 void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    //ui->pushButton_download->setText(QString("%1%").arg(bytesReceived*100/bytesTotal));    
+    controlBar->pushButton_download->setText(QString("%1%").arg(bytesReceived*100/bytesTotal));
     float p = (float)bytesReceived/bytesTotal;
     controlBar->pushButton_download->setStyleSheet(QString("QPushButton { background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0,"
                                                    "stop:0 rgba(48, 194, 124, 255), stop:%1 rgba(48, 194, 124, 255),"
@@ -863,8 +869,8 @@ void MainWindow::pushButtonMVClicked()
     QModelIndex index = tableWidget_playlist->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
     int row = index.row();
     tableWidget_playlist->setCurrentCell(row,0);
-    QString songname = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
-    navWidget->label_songname->setText(songname + "\n" + tableWidget_playlist->item(row,3)->text());
+    QString songname = tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text();
+    navWidget->label_songname->setText(songname);
     QString mvid = tableWidget_playlist->item(row,6)->text();
     QString surl = "http://music.163.com/api/mv/detail/?type=mp4&id=" + mvid;
     qDebug() << "MV:" <<  surl;
@@ -884,4 +890,8 @@ void MainWindow::pushButtonMVClicked()
     player->setMedia(QUrl(mvurl));
     player->play();
     navWidget->listWidget->setCurrentRow(10);
+    QPixmap pixmap;
+    pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
+    navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
+    pixmap.save(QDir::currentPath() + "/cover.jpg");
 }

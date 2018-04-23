@@ -181,7 +181,7 @@ void TitleBar::about()
     label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("         一款基于 Qt 的网易云音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n主页：http://sonichy.gitee.io\n音乐版权：网页云音乐\n参考：\nAPI:\nhttps://github.com/gcmwhite/CloudMusic-Bc-5\nhttp://get.ftqq.com/7430.get\n歌词卡拉OK效果：https://bbs.csdn.net/topics/350233731");
+    label->setText("         一款基于 Qt 的网易云音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n主页：https://github.com/sonichy\n音乐版权：网页云音乐\n参考：\nhttps://github.com/gcmwhite/CloudMusic-Bc-5\nhttp://get.ftqq.com/7430.get\nhttps://github.com/metowolf/NeteaseCloudMusicApi\n歌词卡拉OK效果：https://bbs.csdn.net/topics/350233731");
     label->setStyleSheet("font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);
