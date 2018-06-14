@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setHorizontalHeaderLabels(header);
     tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
     tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");    
-    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; }"
+    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; font-weight:bold; }"
                                         "QTableCornerButton::section { background-color:#232326; }");
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
     vboxPL->addWidget(tableWidget_playlist);
