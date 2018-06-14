@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_playlistTitle->setFont(QFont("Timers",20,50));
     label_playlistTitle->setMargin(5);
     vboxPL->addWidget(label_playlistTitle);
-    tableWidget_playlist = new QTableWidget;
+    tableWidget_playlist = new QTableWidget;    
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -93,9 +93,9 @@ MainWindow::MainWindow(QWidget *parent)
     header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面" << "mvid" << "MV";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
     tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
-    tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
-    //tableWidget_playlist->setStyleSheet("QTableView { color:white; selection-background-color:#000000; }");
-    tableWidget_playlist->setStyleSheet("QTableView::item:selected{ color:white; background:#000000; }");
+    tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");    
+    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; }"
+                                        "QTableCornerButton::section { background-color:#232326; }");
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
     vboxPL->addWidget(tableWidget_playlist);
     playlistWidget->setLayout(vboxPL);
@@ -542,7 +542,7 @@ void MainWindow::getLyric(QString id)
             Lyric lyric;
             QString stime = strlist.at(0).mid(1);
             //qDebug() << stime.length() << stime.indexOf(".");
-            if((stime.length()-stime.indexOf("."))==3) stime += "0";
+            if((stime.length() - stime.indexOf(".")) == 3) stime += "0";
             lyric.time = QTime::fromString(stime, "mm:ss.zzz");
             lyric.sentence = strlist.at(1);
             lyrics.append(lyric);
@@ -653,20 +653,20 @@ void MainWindow::chooseFontColor()
 {
     QObject *object = sender();
     QPalette plt;
-    if (object->objectName()=="LyricFontColorLeft")
+    if (object->objectName() == "LyricFontColorLeft")
         plt = pushButton_fontcolorleft->palette();
-    if (object->objectName()=="LyricFontColorRight")
+    if (object->objectName() == "LyricFontColorRight")
         plt = pushButton_fontcolorright->palette();
     QBrush brush = plt.color(QPalette::WindowText);
     QColor color = QColorDialog::getColor(brush.color(), this);
     if (color.isValid()) {
         plt.setColor(QPalette::ButtonText, color);
-        if (object->objectName()=="LyricFontColorLeft") {
+        if (object->objectName() == "LyricFontColorLeft") {
             lyricWidget->color_left = color;
             pushButton_fontcolorleft->setPalette(plt);
             writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft", color.name());
         }
-        if (object->objectName()=="LyricFontColorRight") {
+        if (object->objectName() == "LyricFontColorRight") {
             lyricWidget->color_right = color;
             pushButton_fontcolorright->setPalette(plt);
             writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorRight", color.name());
