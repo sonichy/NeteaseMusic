@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
     setStyleSheet("color:white; background-color:#232326;");
+    connect(new QShortcut(QKeySequence(Qt::Key_Space),this), SIGNAL(activated()),this, SLOT(playPause()));
     connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()),this, SLOT(exitFullscreen()));
 
     QWidget *widget = new QWidget;
