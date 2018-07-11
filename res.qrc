@@ -34,5 +34,15 @@
         <file>rank.svg</file>
         <file>set.svg</file>
         <file>fullscreen.svg</file>
+        <file>close_hover.svg</file>
+        <file>close_pressed.svg</file>
+        <file>minimize_hover.svg</file>
+        <file>normal_hover.svg</file>
+        <file>maximize_hover.svg</file>
+        <file>menu_hover.svg</file>
+        <file>play_hover.svg</file>
+        <file>pause_hover.svg</file>
+        <file>next_hover.svg</file>
+        <file>last_hover.svg</file>
     </qresource>
 </RCC>

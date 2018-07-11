@@ -15,7 +15,7 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_TranslucentBackground,true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint);
 
-    QVBoxLayout *vbox = new QVBoxLayout;    
+    QVBoxLayout *vbox = new QVBoxLayout;
     vbox->setSpacing(0);
     vbox->setMargin(2);
 
@@ -85,7 +85,7 @@ void LyricWidget::enterEvent(QEvent *event)
 void LyricWidget::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
-    setStyleSheet("");
+    //setStyleSheet("");
     pushButton_close->setVisible(false);
     pushButton_set->setVisible(false);
     isMouseOn = false;

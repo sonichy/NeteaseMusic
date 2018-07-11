@@ -76,7 +76,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QPushButton *pushButton_menu = new QPushButton;
     pushButton_menu->setFixedSize(24,24);
-    pushButton_menu->setIcon(QIcon(":/menu.svg"));
+    pushButton_menu->setStyleSheet("QPushButton { border-image: url(:/menu.svg); }"
+                                       "QPushButton:hover { border-image: url(:/menu_hover.svg); }"
+                                       "QPushButton:pressed { border-image: url(:/menu.svg); }");
     pushButton_menu->setIconSize(QSize(20,20));
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
@@ -96,8 +98,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_minimize = new QPushButton;
     pushButton_minimize->setFixedSize(24,24);
-    pushButton_minimize->setIcon(QIcon(":/minimize.svg"));
-    //pushButton_minimize->setIcon(QIcon::fromTheme("window-minimize"));
+    pushButton_minimize->setStyleSheet("QPushButton { border-image: url(:/minimize.svg); }"
+                                       "QPushButton:hover { border-image: url(:/minimize_hover.svg); }"
+                                       "QPushButton:pressed { border-image: url(:/minimize.svg); }");
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
     pushButton_minimize->setFocusPolicy(Qt::NoFocus);
@@ -108,8 +111,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_maximize = new QPushButton;
     pushButton_maximize->setFixedSize(24,24);
-    pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
-    //pushButton_maximize->setIcon(QIcon::fromTheme("window-maximize"));
+    pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/maximize.svg); }"
+                                       "QPushButton:hover { border-image: url(:/maximize_hover.svg); }"
+                                       "QPushButton:pressed { border-image: url(:/maximize.svg); }");
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
     pushButton_maximize->setFocusPolicy(Qt::NoFocus);
@@ -120,8 +124,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
-    pushButton_close->setIcon(QIcon(":/close.svg"));
-    //pushButton_close->setIcon(QIcon::fromTheme("window-close"));
+    pushButton_close->setStyleSheet("QPushButton { border-image: url(:/close.svg); }"
+                                    "QPushButton:hover { border-image: url(:/close_hover.svg); }"
+                                    "QPushButton:pressed { border-image: url(:/close_pressed.svg); }");
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);

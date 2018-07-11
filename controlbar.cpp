@@ -11,33 +11,41 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     //setFixedHeight(50);
     QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->addSpacing(15);
 
     pushButton_last = new QPushButton;
-    pushButton_last->setFixedSize(48,48);
-    pushButton_last->setIcon(QIcon(":/last.svg"));
-    pushButton_last->setIconSize(QSize(35,35));
+    pushButton_last->setFixedSize(40,40);
+    pushButton_last->setStyleSheet("QPushButton { border-image: url(:/last.svg); }"
+                                   "QPushButton:hover { border-image: url(:/last_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/last.svg); }");
     pushButton_last->setFocusPolicy(Qt::NoFocus);
     pushButton_last->setFlat(true);
     pushButton_last->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_last);
+    hbox->addSpacing(5);
 
     pushButton_play = new QPushButton;
     pushButton_play->setFixedSize(48,48);
-    pushButton_play->setIcon(QIcon(":/play.svg"));
-    pushButton_play->setIconSize(QSize(42,42));
+    pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
+                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
     pushButton_play->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_play);
+    hbox->addSpacing(5);
 
     pushButton_next = new QPushButton;
-    pushButton_next->setFixedSize(48,48);
-    pushButton_next->setIcon(QIcon(":/next.svg"));
-    pushButton_next->setIconSize(QSize(35,35));
+    pushButton_next->setFixedSize(40,40);
+    pushButton_next->setStyleSheet("QPushButton { border-image: url(:/next.svg); }"
+                                   "QPushButton:hover { border-image: url(:/next_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/next.svg); }");
     pushButton_next->setFocusPolicy(Qt::NoFocus);
     pushButton_next->setFlat(true);
     pushButton_next->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_next);
+
+    hbox->addSpacing(25);
 
     label_song_timeNow = new QLabel;
     label_song_timeNow->setText("00:00");

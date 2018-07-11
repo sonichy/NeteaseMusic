@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     label_playlistTitle->setFont(QFont("Timers",20,50));
     label_playlistTitle->setMargin(5);
     vboxPL->addWidget(label_playlistTitle);
-    tableWidget_playlist = new QTableWidget;    
+    tableWidget_playlist = new QTableWidget;
     tableWidget_playlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_playlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_playlist->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -93,14 +93,13 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList header;
     header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面" << "mvid" << "MV";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
-    tableWidget_playlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
-    tableWidget_playlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");    
-    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; font-weight:bold; }"
-                                        "QTableCornerButton::section { background-color:#232326; }");
+    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; font-weight:900; }"
+                                        "QTableCornerButton::section { background-color:#232326; }"
+                                        "QHeaderView::section { color:white; background-color:#232326; }");
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
     vboxPL->addWidget(tableWidget_playlist);
     playlistWidget->setLayout(vboxPL);
-    stackedWidget->addWidget(playlistWidget);    
+    stackedWidget->addWidget(playlistWidget);
 
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
@@ -123,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
     connect(controlBar->slider_progress,SIGNAL(sliderMoved(int)),this,SLOT(sliderProgressMoved(int)));
     connect(controlBar->slider_volume,SIGNAL(sliderMoved(int)),this,SLOT(sliderVolumeMoved(int)));
-    vbox->addWidget(controlBar);    
+    vbox->addWidget(controlBar);
     widget->setLayout(vbox);
 
     player = new QMediaPlayer;
@@ -147,7 +146,7 @@ MainWindow::MainWindow(QWidget *parent)
     }else{
         lyricWidget->move(slx.toInt(),sly.toInt());
     }
-    //qDebug() << "歌词坐标" << slx << sly;    
+    //qDebug() << "歌词坐标" << slx << sly;
     QString SColorLeft = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft");
     if(SColorLeft == "") SColorLeft = "#FF0000";
     lyricWidget->color_left = QColor(SColorLeft);
@@ -162,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent)
         QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
         writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
     } else {
-        QStringList SLFont = sfont.split(",");        
+        QStringList SLFont = sfont.split(",");
         lyricWidget->font = QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
     }
     lyricWidget->show();
@@ -241,15 +240,21 @@ void MainWindow::showNormalMaximize()
     //qDebug() << "isMaximized=" << isMaximized();
     if(isMaximized()){
         showNormal();
-        titleBar->pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
+        //titleBar->pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
+        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/maximize.svg); }"
+                                                     "QPushButton:hover { border-image: url(:/maximize_hover.svg); }"
+                                                     "QPushButton:pressed { border-image: url(:/maximize.svg); }");
     }else{
         showMaximized();
-        titleBar->pushButton_maximize->setIcon(QIcon(":/normal.svg"));
+        //titleBar->pushButton_maximize->setIcon(QIcon(":/normal.svg"));
+        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/normal.svg); }"
+                                                     "QPushButton:hover { border-image: url(:/normal_hover.svg); }"
+                                                     "QPushButton:pressed { border-image: url(:/normal.svg); }");
     }
 }
 
 void MainWindow::createPlaylist(long id, QString name)
-{    
+{
     navWidget->listWidget->setCurrentRow(2);
     label_playlistTitle->setText(name);
     tableWidget_playlist->setRowCount(0);
@@ -301,7 +306,7 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
-    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());    
+    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
     lyricWidget->text = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
     lyricWidget->resize(700,100);
     lyricWidget->update();
@@ -310,7 +315,7 @@ void MainWindow::playSong(int row, int column)
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
     navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
-    qDebug() << QDir::currentPath() + "/cover.jpg";    
+    qDebug() << QDir::currentPath() + "/cover.jpg";
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -322,7 +327,7 @@ void MainWindow::durationChange(qint64 d)
 }
 
 void MainWindow::positionChange(qint64 p)
-{    
+{
     //qDebug() << "position =" << p;
     if(!controlBar->slider_progress->isSliderDown())controlBar->slider_progress->setValue(p);
     QTime t(0,0,0);
@@ -388,13 +393,17 @@ void MainWindow::stateChange(QMediaPlayer::State state)
 {
     //qDebug() << state;
     if(state == QMediaPlayer::PlayingState){
-        controlBar->pushButton_play->setIcon(QIcon(":/pause.svg"));
-    }
-    if(state == QMediaPlayer::PausedState){
-        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
-    }
-    if(state == QMediaPlayer::StoppedState){
-        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/pause.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/pause_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/pause.svg); }");
+    }else if(state == QMediaPlayer::PausedState){
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
+    }else if(state == QMediaPlayer::StoppedState){
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
     }
 }
 
@@ -593,7 +602,7 @@ void MainWindow::dialogSet()
     pushButton_font = new QPushButton;
     QString sfont = lyricWidget->font.family() + "," + QString::number(lyricWidget->font.pointSize()) + "," + lyricWidget->font.weight() + "," + lyricWidget->font.italic();
     pushButton_font->setText(sfont);
-    pushButton_font->setFocusPolicy(Qt::NoFocus);    
+    pushButton_font->setFocusPolicy(Qt::NoFocus);
     connect(pushButton_font,SIGNAL(pressed()),this,SLOT(chooseFont()));
     gridLayout->addWidget(pushButton_font,0,1,1,2);
 
@@ -624,7 +633,7 @@ void MainWindow::dialogSet()
     pushButton_downloadPath->setFlat(true);
     connect(pushButton_downloadPath,SIGNAL(pressed()),this,SLOT(openDownloadPath()));
     gridLayout->addWidget(pushButton_downloadPath,2,0,1,1);
-    lineEdit_downloadPath = new QLineEdit;    
+    lineEdit_downloadPath = new QLineEdit;
     downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
     lineEdit_downloadPath->setText(downloadPath);
     QAction *action_browse = new QAction(this);
@@ -743,7 +752,7 @@ void MainWindow::playNext()
 }
 
 void MainWindow::enterFullscreen()
-{ 
+{
     if (navRow==3 || navRow==10) {
         showFullScreen();
         titleBar->hide();
@@ -794,7 +803,7 @@ void MainWindow::dialogDownload()
     pushButton_path->setToolTip(downloadPath);
     connect(pushButton_path,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));
     gridLayout->addWidget(pushButton_path,2,1,1,1);
-    dialog->setLayout(gridLayout);    
+    dialog->setLayout(gridLayout);
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch();
     QPushButton *pushButton_confirm = new QPushButton("确定");
@@ -826,7 +835,7 @@ void MainWindow::download(QString surl, QString filepath)
     if(!surl.contains("http://music.163.com/song/media/outer/url?id="))
         connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();    
+    loop.exec();
     //跳转URL处理  https://blog.csdn.net/mingzznet/article/details/9724371
     if(surl.contains("http://music.163.com/song/media/outer/url?id=")){
         int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
