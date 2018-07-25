@@ -301,6 +301,7 @@ void MainWindow::createPlaylist(long id, QString name)
 void MainWindow::playSong(int row, int column)
 {
     Q_UNUSED(column);
+    navWidget->pushButton_albumPic->setIcon(QIcon(":/disc.svg"));
     QString id = tableWidget_playlist->item(row,4)->text();
     QString surl = "http://music.163.com/song/media/outer/url?id=" + id + ".mp3";
     qDebug() << surl;
@@ -315,7 +316,7 @@ void MainWindow::playSong(int row, int column)
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
     navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
-    qDebug() << QDir::currentPath() + "/cover.jpg";
+    //qDebug() << QDir::currentPath() + "/cover.jpg";
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -877,6 +878,7 @@ void MainWindow::pushButtonMVClicked()
     if (senderObj == nullptr) {
         return;
     }
+    navWidget->pushButton_albumPic->setIcon(QIcon(":/disc.svg"));
     QModelIndex index = tableWidget_playlist->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
     int row = index.row();
     tableWidget_playlist->setCurrentCell(row,0);

@@ -4,13 +4,13 @@
 #include <QDebug>
 
 NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
-{    
+{
     setStyleSheet("QListWidget { border:none; } "
                   "QListWidget::item { color:#cccccc; padding:3px;} "
                   "QListWidget::item:selected { background-color:#333333; }");
     setFixedWidth(200);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-    QVBoxLayout *vbox = new QVBoxLayout;    
+    QVBoxLayout *vbox = new QVBoxLayout;
     listWidget = new QListWidget;
     listWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
     QListWidgetItem *LWI;
@@ -54,7 +54,8 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
 
     QHBoxLayout *hbox = new QHBoxLayout;
     pushButton_albumPic = new QPushButton;
-    pushButton_albumPic->setFixedSize(74,74);    
+    pushButton_albumPic->setFixedSize(74,74);
+    pushButton_albumPic->setIcon(QIcon(":/disc.svg"));
     pushButton_albumPic->setIconSize(QSize(70,70));
     pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
     pushButton_albumPic->setFlat(true);
