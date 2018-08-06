@@ -133,7 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
     QString vol = readSettings(QDir::currentPath() + "/config.ini", "config", "Volume");
-    if (vol=="") vol="100";
+    if (vol == "") vol = "100";
     player->setVolume(vol.toInt());
 
     lyricWidget = new LyricWidget;
@@ -147,6 +147,17 @@ MainWindow::MainWindow(QWidget *parent)
         lyricWidget->move(slx.toInt(),sly.toInt());
     }
     //qDebug() << "歌词坐标" << slx << sly;
+    QString lyricShow = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow");
+    qDebug() << "lyricShow" << lyricShow;
+    if (lyricShow == "") {
+        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "true");
+    }else{
+        if(lyricShow == "true"){
+            showHideLyric(true);
+        }else{
+            showHideLyric(false);
+        }
+    }
     QString SColorLeft = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft");
     if(SColorLeft == "") SColorLeft = "#FF0000";
     lyricWidget->color_left = QColor(SColorLeft);
@@ -164,7 +175,6 @@ MainWindow::MainWindow(QWidget *parent)
         QStringList SLFont = sfont.split(",");
         lyricWidget->font = QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
     }
-    lyricWidget->show();
 
     downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
     if(downloadPath == ""){
@@ -210,7 +220,6 @@ QByteArray MainWindow::getReply(QString surl)
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
     request.setRawHeader("Referer", "http://music.163.com/");
-    //request.setRawHeader("Cookie", "appver=1.5.0.75771;");
     QNetworkReply *reply = NAM->get(request);
     QEventLoop loop;
     connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
@@ -578,14 +587,19 @@ void MainWindow::hideLyric()
 {
     lyricWidget->hide();
     controlBar->pushButton_lyric->setChecked(false);
+    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "false");
 }
 
 void MainWindow::showHideLyric(bool on)
 {
     if(on){
         lyricWidget->show();
+        controlBar->pushButton_lyric->setChecked(true);
+        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "true");
     }else{
         lyricWidget->hide();
+        controlBar->pushButton_lyric->setChecked(false);
+        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "false");
     }
 }
 

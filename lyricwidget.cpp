@@ -1,4 +1,4 @@
-#include "lyricwidget.h"
+﻿#include "lyricwidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDir>
