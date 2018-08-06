@@ -564,7 +564,7 @@ void MainWindow::getLyric(QString id)
             //qDebug() << stime.length() << stime.indexOf(".");
             if((stime.length() - stime.indexOf(".")) == 3) stime += "0";
             lyric.time = QTime::fromString(stime, "mm:ss.zzz");
-            lyric.sentence = strlist.at(1);
+            lyric.sentence = strlist.at(strlist.length()-1);
             lyrics.append(lyric);
         }
     }
