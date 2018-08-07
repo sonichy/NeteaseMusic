@@ -557,17 +557,20 @@ void MainWindow::getLyric(QString id)
     QStringList line = slyric.split("\n");
     for(int i=0; i<line.size(); i++){
         if(line.at(i).contains("]")){
-            QStringList strlist = line.at(i).split("]");
-            //qDebug() << strlist.at(0).mid(1);
-            Lyric lyric;
-            QString stime = strlist.at(0).mid(1);
-            //qDebug() << stime.length() << stime.indexOf(".");
-            if((stime.length() - stime.indexOf(".")) == 3) stime += "0";
-            lyric.time = QTime::fromString(stime, "mm:ss.zzz");
-            lyric.sentence = strlist.at(strlist.length()-1);
-            lyrics.append(lyric);
+            QStringList SL = line.at(i).split("]");
+            //qDebug() << SL.at(0).mid(1);
+            for(int j=0; j<SL.length()-1; j++){
+                Lyric lyric;
+                QString stime = SL.at(j).mid(1);
+                //qDebug() << stime.length() << stime.indexOf(".");
+                if((stime.length() - stime.indexOf(".")) == 3) stime += "0";
+                lyric.time = QTime::fromString(stime, "mm:ss.zzz");
+                lyric.sentence = SL.at(SL.length()-1);
+                lyrics.append(lyric);
+            }
         }
     }
+    std::sort(lyrics.begin(), lyrics.end(), [](Lyric a, Lyric b){return a.time < b.time;});
     for(int i=0; i<lyrics.size(); i++){
         textBrowser->insertPlainText(lyrics.at(i).sentence + "\n");
     }
