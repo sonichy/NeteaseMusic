@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList header;
     header << "歌名" << "歌手" << "专辑" << "时长" << "id" << "专辑封面" << "mvid" << "MV";
     tableWidget_playlist->setHorizontalHeaderLabels(header);
-    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:#000000; font-weight:900; }"
+    tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:rgb(22,22,22); }"
                                         "QTableCornerButton::section { background-color:#232326; }"
                                         "QHeaderView::section { color:white; background-color:#232326; }");
     connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
@@ -318,7 +318,6 @@ void MainWindow::playSong(int row, int column)
     player->play();
     navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
     lyricWidget->text = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
-    lyricWidget->resize(700,100);
     lyricWidget->update();
     getLyric(id);
     QPixmap pixmap;
@@ -352,10 +351,11 @@ void MainWindow::positionChange(qint64 p)
             lyricWidget->text = lyrics.at(i).sentence;
             lyricWidget->lp = (float)(lyrics.at(i).time.msecsTo(t)) / lyrics.at(i).time.msecsTo(lyrics.at(i+1).time);
             //qDebug() << lyrics.at(i).time.msecsTo(t) << lyrics.at(i).time.msecsTo(lyrics.at(i+1).time) << lyricWidget->lp;
-            QFontMetrics FM(lyricWidget->font);
-            if(FM.boundingRect(lyricWidget->text).width() > lyricWidget->width()){
-                lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,26));
-            }
+//            QFontMetrics FM(lyricWidget->font);
+//            if(FM.boundingRect(lyricWidget->text).width() > lyricWidget->width()){
+//                lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,26));
+//                lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, lyricWidget->y());
+//            }
             lyricWidget->update();
             hl=i;
             break;
@@ -363,7 +363,7 @@ void MainWindow::positionChange(qint64 p)
     }
     //最后一句
     if (lyrics.size()>0) {
-        int j = lyrics.size()-1;
+        int j = lyrics.size() - 1;
         if (t>lyrics.at(j).time) {
             lyricWidget->text = lyrics.at(j).sentence;
             lyricWidget->update();
@@ -671,6 +671,9 @@ void MainWindow::chooseFont()
     QFont font = QFontDialog::getFont(&ok, lyricWidget->font, this, "选择字体");
     if (ok) {
        lyricWidget->font = font;
+       QFontMetrics FM(font);
+       lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,30));
+       lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, lyricWidget->y());
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
        pushButton_font->setText(sfont);
        writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
