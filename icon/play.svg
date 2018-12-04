@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="48" height="48" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<circle cx="24" cy="24" r="22" stroke="rgb(100,100,100)" stroke-width="1" fill="none" />
+<polygon points="16,10 16,38 38,24" fill="white" stroke="#000000" stroke-width="0" />
+</svg>
+
