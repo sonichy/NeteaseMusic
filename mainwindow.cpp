@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     prevRow = 1;
     navRow = 1;
-    setWindowIcon(QIcon(":/icon.svg"));
+    setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
@@ -46,16 +46,16 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->setContentsMargins(0,0,0,0);
 
     titleBar = new TitleBar;
-    connect(titleBar->action_search,SIGNAL(triggered(bool)),this,SLOT(preSearch()));
-    connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(preSearch()));
-    connect(titleBar->lineEdit_page,SIGNAL(returnPressed()),this,SLOT(search()));
-    connect(titleBar->pushButton_lastPage,SIGNAL(released()),this,SLOT(lastPage()));
-    connect(titleBar->pushButton_nextPage,SIGNAL(released()),this,SLOT(nextPage()));
-    connect(titleBar->pushButton_minimize,SIGNAL(released()),this,SLOT(showMinimized()));
-    connect(titleBar->pushButton_maximize,SIGNAL(released()),this,SLOT(showNormalMaximize()));
-    connect(titleBar->pushButton_close,SIGNAL(released()),qApp,SLOT(quit()));
-    connect(titleBar->action_set,SIGNAL(triggered()),this,SLOT(dialogSet()));
-    connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
+    connect(titleBar->action_search, SIGNAL(triggered(bool)), this, SLOT(preSearch()));
+    connect(titleBar->lineEdit_search, SIGNAL(returnPressed()), this, SLOT(preSearch()));
+    connect(titleBar->lineEdit_page, SIGNAL(returnPressed()), this, SLOT(search()));
+    connect(titleBar->pushButton_lastPage, SIGNAL(released()), this, SLOT(lastPage()));
+    connect(titleBar->pushButton_nextPage, SIGNAL(released()), this, SLOT(nextPage()));
+    connect(titleBar->pushButton_minimize, SIGNAL(released()), this, SLOT(showMinimized()));
+    connect(titleBar->pushButton_maximize, SIGNAL(released()), this, SLOT(showNormalMaximize()));
+    connect(titleBar->pushButton_close, SIGNAL(released()), qApp, SLOT(quit()));
+    connect(titleBar->action_set,SIGNAL(triggered()), this, SLOT(dialogSet()));
+    connect(titleBar, SIGNAL(moveMainWindow(QPoint)), this, SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
     label_titleBar_bottom = new QLabel;
@@ -67,8 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
     navWidget->listWidget->setCurrentRow(1);
-    connect(navWidget->listWidget,SIGNAL(currentRowChanged(int)),this,SLOT(navPage(int)));
-    connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapPlaylist()));
+    connect(navWidget->listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(navPage(int)));
+    connect(navWidget->pushButton_albumPic, SIGNAL(clicked(bool)), this, SLOT(swapPlaylist()));
     hbox->addWidget(navWidget);
 
     stackedWidget = new QStackedWidget;
@@ -113,15 +113,15 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
-    connect(controlBar->pushButton_last,SIGNAL(pressed()),this,SLOT(playLast()));
-    connect(controlBar->pushButton_play,SIGNAL(pressed()),this,SLOT(playPause()));
-    connect(controlBar->pushButton_next,SIGNAL(pressed()),this,SLOT(playNext()));
-    connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
-    connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
-    connect(controlBar->pushButton_download,SIGNAL(pressed()),this,SLOT(dialogDownload()));
-    connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
-    connect(controlBar->slider_progress,SIGNAL(sliderMoved(int)),this,SLOT(sliderProgressMoved(int)));
-    connect(controlBar->slider_volume,SIGNAL(sliderMoved(int)),this,SLOT(sliderVolumeMoved(int)));
+    connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
+    connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
+    connect(controlBar->pushButton_next, SIGNAL(pressed()), this, SLOT(playNext()));
+    connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
+    connect(controlBar->pushButton_lyric, SIGNAL(clicked(bool)), this, SLOT(showHideLyric(bool)));
+    connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
+    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
+    connect(controlBar->slider_progress, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int)));
+    connect(controlBar->slider_volume, SIGNAL(sliderMoved(int)), this, SLOT(sliderVolumeMoved(int)));
     vbox->addWidget(controlBar);
     widget->setLayout(vbox);
 
@@ -249,16 +249,16 @@ void MainWindow::showNormalMaximize()
     //qDebug() << "isMaximized=" << isMaximized();
     if(isMaximized()){
         showNormal();
-        //titleBar->pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
-        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/maximize.svg); }"
+        //titleBar->pushButton_maximize->setIcon(QIcon(":/icon/maximize.svg"));
+        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/icon/maximize.svg); }"
                                                      "QPushButton:hover { border-image: url(:/maximize_hover.svg); }"
                                                      "QPushButton:pressed { border-image: url(:/maximize.svg); }");
     }else{
         showMaximized();
-        //titleBar->pushButton_maximize->setIcon(QIcon(":/normal.svg"));
-        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/normal.svg); }"
-                                                     "QPushButton:hover { border-image: url(:/normal_hover.svg); }"
-                                                     "QPushButton:pressed { border-image: url(:/normal.svg); }");
+        //titleBar->pushButton_maximize->setIcon(QIcon(":/icon/normal.svg"));
+        titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/icon/normal.svg); }"
+                                                     "QPushButton:hover { border-image: url(:/icon/normal_hover.svg); }"
+                                                     "QPushButton:pressed { border-image: url(:/icon/normal.svg); }");
     }
 }
 
@@ -295,7 +295,7 @@ void MainWindow::createPlaylist(long id, QString name)
         if(mvid != 0){
             QPushButton *pushButton_MV = new QPushButton;
             pushButton_MV->setFixedSize(24,24);
-            pushButton_MV->setIcon(QIcon(":/video.svg"));
+            pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
             pushButton_MV->setIconSize(QSize(24,24));
             pushButton_MV->setFocusPolicy(Qt::NoFocus);
             pushButton_MV->setFlat(true);
@@ -310,7 +310,7 @@ void MainWindow::createPlaylist(long id, QString name)
 void MainWindow::playSong(int row, int column)
 {
     Q_UNUSED(column);
-    navWidget->pushButton_albumPic->setIcon(QIcon(":/disc.svg"));
+    navWidget->pushButton_albumPic->setIcon(QIcon(":/icon/disc.svg"));
     QString id = tableWidget_playlist->item(row,4)->text();
     QString surl = "http://music.163.com/song/media/outer/url?id=" + id + ".mp3";
     qDebug() << surl;
@@ -403,17 +403,17 @@ void MainWindow::stateChange(QMediaPlayer::State state)
 {
     //qDebug() << state;
     if(state == QMediaPlayer::PlayingState){
-        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/pause.svg); }"
-                                                   "QPushButton:hover { border-image: url(:/pause_hover.svg); }"
-                                                   "QPushButton:pressed { border-image: url(:/pause.svg); }");
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/icon/pause.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/icon/pause_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/icon/pause.svg); }");
     }else if(state == QMediaPlayer::PausedState){
-        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
-                                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
-                                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/icon/play.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/icon/play_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/icon/play.svg); }");
     }else if(state == QMediaPlayer::StoppedState){
-        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
-                                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
-                                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
+        controlBar->pushButton_play->setStyleSheet("QPushButton { border-image: url(:/icon/play.svg); }"
+                                                   "QPushButton:hover { border-image: url(:/icon/play_hover.svg); }"
+                                                   "QPushButton:pressed { border-image: url(:/icon/play.svg); }");
     }
 }
 
@@ -467,12 +467,12 @@ void MainWindow::mute()
 {
     if(player->isMuted()){
         player->setMuted(false);
-        controlBar->pushButton_mute->setIcon(QIcon(":/volume.svg"));
+        controlBar->pushButton_mute->setIcon(QIcon(":/icon/volume.svg"));
         controlBar->slider_volume->setValue(volume);
     }else{
         volume = player->volume();
         player->setMuted(true);
-        controlBar->pushButton_mute->setIcon(QIcon(":/mute.svg"));
+        controlBar->pushButton_mute->setIcon(QIcon(":/icon/mute.svg"));
         controlBar->slider_volume->setValue(0);
     }
 }
@@ -514,7 +514,7 @@ void MainWindow::search()
             if(mvid != 0){
                 QPushButton *pushButton_MV = new QPushButton;
                 pushButton_MV->setFixedSize(24,24);
-                pushButton_MV->setIcon(QIcon(":/video.svg"));
+                pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
                 pushButton_MV->setIconSize(QSize(24,24));
                 pushButton_MV->setFocusPolicy(Qt::NoFocus);
                 pushButton_MV->setFlat(true);
@@ -875,7 +875,7 @@ void MainWindow::download(QString surl, QString filepath)
     file.write(reply->readAll());
     //qDebug() << reply->readAll();
     file.close();
-    controlBar->pushButton_download->setIcon(QIcon(":/download.svg"));
+    controlBar->pushButton_download->setIcon(QIcon(":/icon/download.svg"));
     controlBar->pushButton_download->setText("");
     controlBar->pushButton_download->setEnabled(true);
 }
@@ -898,7 +898,7 @@ void MainWindow::pushButtonMVClicked()
     if (senderObj == nullptr) {
         return;
     }
-    navWidget->pushButton_albumPic->setIcon(QIcon(":/disc.svg"));
+    navWidget->pushButton_albumPic->setIcon(QIcon(":/icon/disc.svg"));
     QModelIndex index = tableWidget_playlist->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
     int row = index.row();
     tableWidget_playlist->setCurrentCell(row,0);

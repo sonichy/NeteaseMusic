@@ -15,9 +15,9 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_last = new QPushButton;
     pushButton_last->setFixedSize(40,40);
-    pushButton_last->setStyleSheet("QPushButton { border-image: url(:/last.svg); }"
-                                   "QPushButton:hover { border-image: url(:/last_hover.svg); }"
-                                   "QPushButton:pressed { border-image: url(:/last.svg); }");
+    pushButton_last->setStyleSheet("QPushButton { border-image: url(:/icon/last.svg); }"
+                                   "QPushButton:hover { border-image: url(:/icon/last_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/icon/last.svg); }");
     pushButton_last->setFocusPolicy(Qt::NoFocus);
     pushButton_last->setFlat(true);
     pushButton_last->setCursor(Qt::PointingHandCursor);
@@ -26,9 +26,9 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_play = new QPushButton;
     pushButton_play->setFixedSize(48,48);
-    pushButton_play->setStyleSheet("QPushButton { border-image: url(:/play.svg); }"
-                                   "QPushButton:hover { border-image: url(:/play_hover.svg); }"
-                                   "QPushButton:pressed { border-image: url(:/play.svg); }");
+    pushButton_play->setStyleSheet("QPushButton { border-image: url(:/icon/play.svg); }"
+                                   "QPushButton:hover { border-image: url(:/icon/play_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/icon/play.svg); }");
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
     pushButton_play->setCursor(Qt::PointingHandCursor);
@@ -37,9 +37,9 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_next = new QPushButton;
     pushButton_next->setFixedSize(40,40);
-    pushButton_next->setStyleSheet("QPushButton { border-image: url(:/next.svg); }"
-                                   "QPushButton:hover { border-image: url(:/next_hover.svg); }"
-                                   "QPushButton:pressed { border-image: url(:/next.svg); }");
+    pushButton_next->setStyleSheet("QPushButton { border-image: url(:/icon/next.svg); }"
+                                   "QPushButton:hover { border-image: url(:/icon/next_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/icon/next.svg); }");
     pushButton_next->setFocusPolicy(Qt::NoFocus);
     pushButton_next->setFlat(true);
     pushButton_next->setCursor(Qt::PointingHandCursor);
@@ -67,7 +67,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_mute = new QPushButton;
     pushButton_mute->setFixedSize(25,25);
-    pushButton_mute->setIcon(QIcon(":/volume.svg"));
+    pushButton_mute->setIcon(QIcon(":/icon/volume.svg"));
     pushButton_mute->setIconSize(QSize(20,20));
     pushButton_mute->setFocusPolicy(Qt::NoFocus);
     pushButton_mute->setFlat(true);
@@ -85,7 +85,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     QPushButton *pushButton_loop = new QPushButton;
     pushButton_loop->setFixedSize(30,30);
-    pushButton_loop->setIcon(QIcon(":/looplist.svg"));
+    pushButton_loop->setIcon(QIcon(":/icon/looplist.svg"));
     pushButton_loop->setIconSize(QSize(25,25));
     pushButton_loop->setFocusPolicy(Qt::NoFocus);
     pushButton_loop->setFlat(true);
@@ -94,7 +94,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_lyric = new QPushButton;
     pushButton_lyric->setFixedSize(30,30);
-    pushButton_lyric->setIcon(QIcon(":/lyric.svg"));
+    pushButton_lyric->setIcon(QIcon(":/icon/lyric.svg"));
     pushButton_lyric->setIconSize(QSize(25,25));
     pushButton_lyric->setFocusPolicy(Qt::NoFocus);
     pushButton_lyric->setFlat(true);
@@ -105,7 +105,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
 //    QPushButton *pushButton_playlist = new QPushButton;
 //    pushButton_playlist->setFixedSize(30,30);
-//    pushButton_playlist->setIcon(QIcon(":/playlist.svg"));
+//    pushButton_playlist->setIcon(QIcon(":/icon/playlist.svg"));
 //    pushButton_playlist->setIconSize(QSize(25,25));
 //    pushButton_playlist->setFocusPolicy(Qt::NoFocus);
 //    pushButton_playlist->setFlat(true);
@@ -114,7 +114,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_download = new QPushButton;
     pushButton_download->setFixedSize(30,30);
-    pushButton_download->setIcon(QIcon(":/download.svg"));
+    pushButton_download->setIcon(QIcon(":/icon/download.svg"));
     pushButton_download->setIconSize(QSize(25,25));
     pushButton_download->setFocusPolicy(Qt::NoFocus);
     pushButton_download->setFlat(true);
@@ -123,7 +123,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_fullscreen = new QPushButton;
     pushButton_fullscreen->setFixedSize(30,30);
-    pushButton_fullscreen->setIcon(QIcon(":/fullscreen.svg"));
+    pushButton_fullscreen->setIcon(QIcon(":/icon/fullscreen.svg"));
     //pushButton_fullscreen->setIcon(QIcon::fromTheme("window_fullscreen"));
     pushButton_fullscreen->setIconSize(QSize(25,25));
     pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);

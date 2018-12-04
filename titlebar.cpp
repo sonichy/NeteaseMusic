@@ -23,7 +23,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QLabel *label_icon = new QLabel;
     label_icon->setFixedSize(36,36);
-    label_icon->setPixmap(QPixmap(":/icont.svg").scaled(label_icon->size(),Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label_icon->setPixmap(QPixmap(":/icon/icont.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
 
     QLabel *label_title = new QLabel;
@@ -39,13 +39,13 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
     lineEdit_search->setFixedWidth(200);
     action_search = new QAction(this);
-    action_search->setIcon(QIcon(":/search.svg"));
-    lineEdit_search->addAction(action_search,QLineEdit::TrailingPosition);
+    action_search->setIcon(QIcon(":/icon/search.svg"));
+    lineEdit_search->addAction(action_search, QLineEdit::TrailingPosition);
     hbox->addWidget(lineEdit_search);
 
     pushButton_lastPage = new QPushButton;
     pushButton_lastPage->setFixedSize(24,24);
-    pushButton_lastPage->setIcon(QIcon(":/lastpage.svg"));
+    pushButton_lastPage->setIcon(QIcon(":/icon/lastpage.svg"));
     pushButton_lastPage->setIconSize(QSize(20,20));
     pushButton_lastPage->setFlat(true);
     pushButton_lastPage->setFocusPolicy(Qt::NoFocus);
@@ -64,7 +64,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_nextPage = new QPushButton;
     pushButton_nextPage->setFixedSize(24,24);
-    pushButton_nextPage->setIcon(QIcon(":/nextpage.svg"));
+    pushButton_nextPage->setIcon(QIcon(":/icon/nextpage.svg"));
     pushButton_nextPage->setIconSize(QSize(20,20));
     pushButton_nextPage->setFlat(true);
     pushButton_nextPage->setFocusPolicy(Qt::NoFocus);
@@ -76,9 +76,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QPushButton *pushButton_menu = new QPushButton;
     pushButton_menu->setFixedSize(24,24);
-    pushButton_menu->setStyleSheet("QPushButton { border-image: url(:/menu.svg); }"
-                                       "QPushButton:hover { border-image: url(:/menu_hover.svg); }"
-                                       "QPushButton:pressed { border-image: url(:/menu.svg); }");
+    pushButton_menu->setStyleSheet("QPushButton { border-image: url(:/icon/menu.svg); }"
+                                   "QPushButton:hover { border-image: url(:/icon/menu_hover.svg); }"
+                                   "QPushButton:pressed { border-image: url(:/icon/menu.svg); }");
     pushButton_menu->setIconSize(QSize(20,20));
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
@@ -98,9 +98,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_minimize = new QPushButton;
     pushButton_minimize->setFixedSize(24,24);
-    pushButton_minimize->setStyleSheet("QPushButton { border-image: url(:/minimize.svg); }"
-                                       "QPushButton:hover { border-image: url(:/minimize_hover.svg); }"
-                                       "QPushButton:pressed { border-image: url(:/minimize.svg); }");
+    pushButton_minimize->setStyleSheet("QPushButton { border-image: url(:/icon/minimize.svg); }"
+                                       "QPushButton:hover { border-image: url(:/icon/minimize_hover.svg); }"
+                                       "QPushButton:pressed { border-image: url(:/icon/minimize.svg); }");
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
     pushButton_minimize->setFocusPolicy(Qt::NoFocus);
@@ -111,9 +111,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_maximize = new QPushButton;
     pushButton_maximize->setFixedSize(24,24);
-    pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/maximize.svg); }"
-                                       "QPushButton:hover { border-image: url(:/maximize_hover.svg); }"
-                                       "QPushButton:pressed { border-image: url(:/maximize.svg); }");
+    pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/icon/maximize.svg); }"
+                                       "QPushButton:hover { border-image: url(:/icon/maximize_hover.svg); }"
+                                       "QPushButton:pressed { border-image: url(:/icon/maximize.svg); }");
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
     pushButton_maximize->setFocusPolicy(Qt::NoFocus);
@@ -124,9 +124,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
-    pushButton_close->setStyleSheet("QPushButton { border-image: url(:/close.svg); }"
-                                    "QPushButton:hover { border-image: url(:/close_hover.svg); }"
-                                    "QPushButton:pressed { border-image: url(:/close_pressed.svg); }");
+    pushButton_close->setStyleSheet("QPushButton { border-image: url(:/icon/close.svg); }"
+                                    "QPushButton:hover { border-image: url(:/icon/close_hover.svg); }"
+                                    "QPushButton:pressed { border-image: url(:/icon/close_pressed.svg); }");
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);
@@ -180,7 +180,7 @@ void TitleBar::about()
     dialog->setFixedSize(500,370);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap(":/icon.jpg").scaled(80,80,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label->setPixmap(QPixmap(":/icon/icon.jpg").scaled(80,80,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;
