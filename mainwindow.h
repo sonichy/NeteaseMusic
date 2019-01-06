@@ -13,6 +13,7 @@
 #include <QTime>
 #include <QScrollArea>
 #include <QVideoWidget>
+#include <QSettings>
 
 class MainWindow : public QMainWindow
 {
@@ -22,19 +23,20 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:    
+private:
     QLabel *label_titleBar_bottom;
     TitleBar *titleBar;
     NavWidget *navWidget;
-    QStackedWidget *stackedWidget;   
+    QStackedWidget *stackedWidget;
     QScrollArea *rankScrollArea;
     QWidget *playlistWidget;
     QLabel *label_playlistTitle;
     QTableWidget *tableWidget_playlist;
+    QWidget *songWidget;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
-    LyricWidget *lyricWidget;    
+    LyricWidget *lyricWidget;
     int volume, navRow, prevRow;
     void createWidgetToplist();
     QByteArray getReply(QString surl);
@@ -47,10 +49,9 @@ private:
     QList<Lyric> lyrics;
     QLineEdit *lineEdit_downloadPath;
     QString downloadPath;
-    QString readSettings(QString path, QString group, QString key);
-    void writeSettings(QString path, QString group, QString key, QString value);
     QPushButton *pushButton_font, *pushButton_fontcolorleft, *pushButton_fontcolorright, *pushButton_path;
     QVideoWidget *videoWidget;
+    QSettings settings;
 
 private slots:
     void showNormalMaximize();
@@ -61,10 +62,10 @@ private slots:
     void positionChange(qint64 p);
     void stateChange(QMediaPlayer::State state);
     void volumeChange(int v);
-    void playPause();    
+    void playPause();
     void sliderProgressMoved(int p);
     void sliderVolumeMoved(int v);
-    void mute();    
+    void mute();
     void navPage(int row);
     void preSearch();
     void search();

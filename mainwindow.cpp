@@ -22,12 +22,12 @@
 #include <QFontDialog>
 #include <QColorDialog>
 #include <QFileDialog>
-#include <QSettings>
 #include <QShortcut>
 #include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+      settings(QCoreApplication::organizationName(), QCoreApplication::applicationName())
 {
     prevRow = 1;
     navRow = 1;
@@ -101,9 +101,13 @@ MainWindow::MainWindow(QWidget *parent)
     playlistWidget->setLayout(vboxPL);
     stackedWidget->addWidget(playlistWidget);
 
+    songWidget = new QWidget;
+    QVBoxLayout *vboxs = new QVBoxLayout;
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
-    stackedWidget->addWidget(textBrowser);
+    vboxs->addWidget(textBrowser);
+    songWidget->setLayout(vboxs);
+    stackedWidget->addWidget(songWidget);
 
     videoWidget = new QVideoWidget;
     videoWidget->setStyleSheet("background-color:black;");
@@ -132,25 +136,25 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
     //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
-    QString vol = readSettings(QDir::currentPath() + "/config.ini", "config", "Volume");
+    QString vol = settings.value("Volume").toString();
     if (vol == "") vol = "100";
     player->setVolume(vol.toInt());
 
     lyricWidget = new LyricWidget;
     connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(dialogSet()));
     connect(lyricWidget->pushButton_close,SIGNAL(pressed()),this,SLOT(hideLyric()));
-    QString slx = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricX");
-    QString sly = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricY");
+    QString slx =  settings.value("LyricX").toString();
+    QString sly =  settings.value("LyricY").toString();
     if(slx=="" || sly=="" || slx.toInt()>QApplication::desktop()->width() || sly.toInt()>QApplication::desktop()->height()){
         lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, QApplication::desktop()->height()-lyricWidget->height());
     }else{
         lyricWidget->move(slx.toInt(),sly.toInt());
     }
     //qDebug() << "歌词坐标" << slx << sly;
-    QString lyricShow = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow");
+    QString lyricShow = settings.value("LyricShow").toString();
     qDebug() << "lyricShow" << lyricShow;
     if (lyricShow == "") {
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "true");
+        settings.setValue("LyricShow", "true");
     }else{
         if(lyricShow == "true"){
             showHideLyric(true);
@@ -158,27 +162,27 @@ MainWindow::MainWindow(QWidget *parent)
             showHideLyric(false);
         }
     }
-    QString SColorLeft = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft");
+
+    QString SColorLeft =  settings.value("LyricFontColorLeft").toString();
     if(SColorLeft == "") SColorLeft = "#FF0000";
     lyricWidget->color_left = QColor(SColorLeft);
-    QString SColorRight = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorRight");
+    QString SColorRight =  settings.value("LyricFontColorRight").toString();
     if(SColorRight == "") SColorRight = "#00FF00";
     lyricWidget->color_right = QColor(SColorRight);
-    QString sfont = readSettings(QDir::currentPath() + "/config.ini", "config", "Font");
+    QString sfont =  settings.value("Font").toString();
     if (sfont == "") {
         QFont font = qApp->font();
         font.setPointSize(40);
         lyricWidget->font = font;
         QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
+        settings.setValue("Font", sfont);
     } else {
         QStringList SLFont = sfont.split(",");
         lyricWidget->font = QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
     }
-
-    downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
+    downloadPath =  settings.value("DownloadPath").toString();
     if(downloadPath == ""){
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).first());
+        settings.setValue("DownloadPath", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).first());
     }
 }
 
@@ -443,7 +447,7 @@ void MainWindow::navPage(int row)
         break;
     case 3:
         textBrowser->setStyleSheet("QTextBrowser { color:white; border-image:url(cover.jpg); }");
-        stackedWidget->setCurrentWidget(textBrowser);
+        stackedWidget->setCurrentWidget(songWidget);
         break;
     case 10:
         stackedWidget->setCurrentWidget(videoWidget);
@@ -460,7 +464,7 @@ void MainWindow::sliderProgressMoved(int p)
 void MainWindow::sliderVolumeMoved(int v)
 {
     player->setVolume(v);
-    writeSettings(QDir::currentPath() + "/config.ini", "config", "Volume", QString::number(v));
+    settings.setValue("Volume", v);
 }
 
 void MainWindow::mute()
@@ -583,14 +587,15 @@ void MainWindow::getLyric(QString id)
 
 void MainWindow::swapPlaylist()
 {
-    navWidget->listWidget->setCurrentRow(prevRow);
+    navWidget->listWidget->setCurrentRow(3);
+    //stackedWidget->setCurrentWidget(songWidget);
 }
 
 void MainWindow::hideLyric()
 {
     lyricWidget->hide();
     controlBar->pushButton_lyric->setChecked(false);
-    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "false");
+    settings.setValue("LyricShow", "false");
 }
 
 void MainWindow::showHideLyric(bool on)
@@ -598,11 +603,11 @@ void MainWindow::showHideLyric(bool on)
     if(on){
         lyricWidget->show();
         controlBar->pushButton_lyric->setChecked(true);
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "true");
+        settings.setValue("LyricShow", "true");
     }else{
         lyricWidget->hide();
         controlBar->pushButton_lyric->setChecked(false);
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricShow", "false");
+        settings.setValue("LyricShow", "false");
     }
 }
 
@@ -611,7 +616,7 @@ void MainWindow::dialogSet()
     QDialog *dialog_set = new QDialog(this);
     dialog_set->setWindowTitle("设置");
     dialog_set->setFixedSize(300,200);
-    dialog_set->setStyleSheet("QLineEdit{border:1px solid gray;}");
+    dialog_set->setStyleSheet("QLineEdit { border:1px solid gray; } ");
     QGridLayout *gridLayout = new QGridLayout;
 
     QLabel *label = new QLabel("歌词字体");
@@ -652,7 +657,7 @@ void MainWindow::dialogSet()
     connect(pushButton_downloadPath,SIGNAL(pressed()),this,SLOT(openDownloadPath()));
     gridLayout->addWidget(pushButton_downloadPath,2,0,1,1);
     lineEdit_downloadPath = new QLineEdit;
-    downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
+    downloadPath =  settings.value("DownloadPath").toString();
     lineEdit_downloadPath->setText(downloadPath);
     QAction *action_browse = new QAction(this);
     action_browse->setObjectName("SettingDialogChooseDownloadPath");
@@ -676,7 +681,7 @@ void MainWindow::chooseFont()
        lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, lyricWidget->y());
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
        pushButton_font->setText(sfont);
-       writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
+       settings.setValue("Font", sfont);
     }
 }
 
@@ -695,19 +700,19 @@ void MainWindow::chooseFontColor()
         if (object->objectName() == "LyricFontColorLeft") {
             lyricWidget->color_left = color;
             pushButton_fontcolorleft->setPalette(plt);
-            writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorLeft", color.name());
+            settings.setValue("LyricFontColorLeft", color.name());
         }
         if (object->objectName() == "LyricFontColorRight") {
             lyricWidget->color_right = color;
             pushButton_fontcolorright->setPalette(plt);
-            writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColorRight", color.name());
+            settings.setValue("LyricFontColorRight", color.name());
         }
     }
 }
 
 void MainWindow::chooseDownloadPath()
 {
-    downloadPath = QFileDialog::getExistingDirectory(this,"保存路径",downloadPath, QFileDialog::ShowDirsOnly |QFileDialog::DontResolveSymlinks);
+    downloadPath = QFileDialog::getExistingDirectory(this, "保存路径", downloadPath, QFileDialog::ShowDirsOnly |QFileDialog::DontResolveSymlinks);
     if (downloadPath != "") {
         QObject *object = sender();
         qDebug() << object->objectName() << downloadPath;
@@ -718,31 +723,13 @@ void MainWindow::chooseDownloadPath()
             pushButton_path->setText(downloadPath);
             pushButton_path->setToolTip(downloadPath);
         }
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath", downloadPath);
+        settings.setValue("DownloadPath", downloadPath);
     }
 }
 
 void MainWindow::openDownloadPath()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(lineEdit_downloadPath->text()));
-}
-
-QString MainWindow::readSettings(QString path, QString group, QString key)
-{
-    QSettings settings(path, QSettings::IniFormat);
-    settings.setIniCodec("UTF-8");
-    settings.beginGroup(group);
-    QString value = settings.value(key).toString();
-    return value;
-}
-
-void MainWindow::writeSettings(QString path, QString group, QString key, QString value)
-{
-    QSettings settings(path, QSettings::IniFormat);
-    settings.setIniCodec("UTF-8");
-    settings.beginGroup(group);
-    settings.setValue(key, value);
-    settings.endGroup();
 }
 
 void MainWindow::playLast()
@@ -807,7 +794,7 @@ void MainWindow::dialogDownload()
     QLabel *label = new QLabel("歌名");
     gridLayout->addWidget(label,0,0,1,1);
     QLineEdit *lineEdit_songname = new QLineEdit;
-    lineEdit_songname->setText(navWidget->label_songname->text().replace("\n","-"));
+    lineEdit_songname->setText(navWidget->label_songname->text().replace("\n"," - "));
     gridLayout->addWidget(lineEdit_songname,0,1,1,1);
     label = new QLabel("下载地址");
     gridLayout->addWidget(label,1,0,1,1);
@@ -819,7 +806,7 @@ void MainWindow::dialogDownload()
     pushButton_path = new QPushButton;
     pushButton_path->setObjectName("DownloadDialogPath");
     pushButton_path->setFocusPolicy(Qt::NoFocus);
-    downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
+    downloadPath =  settings.value("DownloadPath").toString();
     pushButton_path->setText(downloadPath);
     pushButton_path->setToolTip(downloadPath);
     connect(pushButton_path,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));

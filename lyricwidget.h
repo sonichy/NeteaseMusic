@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QSettings>
 
 class LyricWidget : public QWidget
 {
@@ -22,12 +23,12 @@ public:
 
 private:
     QPoint m_point;
+    QSettings settings;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
-    void writeSettings(QString path, QString group, QString key, QString value);
     void paintEvent(QPaintEvent *event);
 
 };
