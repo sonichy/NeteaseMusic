@@ -1,10 +1,12 @@
-#ifndef NAVWIDGET_H
+﻿#ifndef NAVWIDGET_H
 #define NAVWIDGET_H
 
 #include <QWidget>
 #include <QListWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QDebug>
+#include <QVBoxLayout>
 
 class NavWidget : public QWidget
 {
@@ -18,7 +20,7 @@ public:
 
 private:
 
-signals:    
+signals:
 
 public slots:
 

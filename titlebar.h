@@ -1,4 +1,4 @@
-#ifndef TITLEBAR_H
+﻿#ifndef TITLEBAR_H
 #define TITLEBAR_H
 
 #include <QWidget>
@@ -6,6 +6,15 @@
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QAction>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QDebug>
+#include <QMenu>
+#include <QAction>
+#include <QApplication>
+#include <QDialog>
+#include <QIntValidator>
+
 
 class TitleBar : public QWidget
 {

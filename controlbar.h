@@ -1,10 +1,11 @@
-#ifndef CONTROLBAR_H
+﻿#ifndef CONTROLBAR_H
 #define CONTROLBAR_H
 
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
 #include <QSlider>
+#include <QHBoxLayout>
 
 class ControlBar : public QWidget
 {

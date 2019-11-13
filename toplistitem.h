@@ -1,9 +1,11 @@
-#ifndef TOPLISTITEM_H
+﻿#ifndef TOPLISTITEM_H
 #define TOPLISTITEM_H
 
 #include <QWidget>
 #include <QPushButton>
 #include <QNetworkReply>
+#include <QVBoxLayout>
+#include <QNetworkAccessManager>
 
 class ToplistItem : public QWidget
 {

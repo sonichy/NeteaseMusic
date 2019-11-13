@@ -25,5 +25,5 @@ HEADERS += \
 RESOURCES += \
     res.qrc
 
-RC_ICONS = icon.ico
+RC_ICONS = icon\icon.ico
 #RC_FILE = res.rc

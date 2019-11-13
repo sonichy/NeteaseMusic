@@ -1,29 +1,7 @@
 #pragma execution_character_set("utf-8")
 #include "mainwindow.h"
 #include "toplistitem.h"
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QDebug>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QEventLoop>
-#include <QHeaderView>
-#include <QDir>
-#include <QTextBlock>
-#include <QScrollBar>
-#include <QDialog>
-#include <QStandardPaths>
-#include <QFontDialog>
-#include <QColorDialog>
-#include <QFileDialog>
-#include <QShortcut>
-#include <QDesktopServices>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -34,10 +12,13 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
-    move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
+    move((QApplication::desktop()->width() - width())/2,(QApplication::desktop()->height() - height())/2);
     setStyleSheet("color:white; background-color:#232326;");
-    connect(new QShortcut(QKeySequence(Qt::Key_Space),this), SIGNAL(activated()),this, SLOT(playPause()));
-    connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()),this, SLOT(exitFullscreen()));
+    connect(new QShortcut(QKeySequence(Qt::Key_Space),this), SIGNAL(activated()), this, SLOT(playPause()));
+    connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()), this, SLOT(exitFullScreen()));
+    connect(new QShortcut(QKeySequence(Qt::Key_F),this), SIGNAL(activated()), this, SLOT(enterExitFullScreen()));
+    connect(new QShortcut(QKeySequence(Qt::Key_Left),this), SIGNAL(activated()), this, SLOT(seekBack()));
+    connect(new QShortcut(QKeySequence(Qt::Key_Right),this), SIGNAL(activated()), this, SLOT(seekForward()));
 
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
@@ -123,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
     connect(controlBar->pushButton_lyric, SIGNAL(clicked(bool)), this, SLOT(showHideLyric(bool)));
     connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
-    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
+    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullScreen()));
     connect(controlBar->slider_progress, SIGNAL(sliderMoved(int)), this, SLOT(sliderProgressMoved(int)));
     connect(controlBar->slider_volume, SIGNAL(sliderMoved(int)), this, SLOT(sliderVolumeMoved(int)));
     vbox->addWidget(controlBar);
@@ -131,11 +112,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     player = new QMediaPlayer;
     player->setVideoOutput(videoWidget);
-    connect(player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
-    connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChange(qint64)));
-    connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
-    //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
-    connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
+    connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(durationChange(qint64)));
+    connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChange(qint64)));
+    connect(player, SIGNAL(volumeChanged(int)), this, SLOT(volumeChange(int)));
+    //connect(player, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(errorHandle(QMediaPlayer::Error)));
+    connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), SLOT(stateChange(QMediaPlayer::State)));
     QString vol = settings.value("Volume").toString();
     if (vol == "") vol = "100";
     player->setVolume(vol.toInt());
@@ -759,19 +740,30 @@ void MainWindow::playNext()
     }
 }
 
-void MainWindow::enterFullscreen()
+void MainWindow::enterExitFullScreen()
 {
-    if (navRow==3 || navRow==10) {
-        showFullScreen();
-        titleBar->hide();
-        label_titleBar_bottom->hide();
-        navWidget->hide();
-        controlBar->hide();
-        lyricWidget->hide();
+    if (!isFullScreen()) {
+        enterFullScreen();
+    } else {
+        exitFullScreen();
     }
 }
 
-void MainWindow::exitFullscreen()
+void MainWindow::enterFullScreen()
+{
+    if (navRow==3 || navRow==10) {
+        if (!isFullScreen()) {
+            showFullScreen();
+            titleBar->hide();
+            label_titleBar_bottom->hide();
+            navWidget->hide();
+            controlBar->hide();
+            lyricWidget->hide();
+        }
+    }
+}
+
+void MainWindow::exitFullScreen()
 {
     if (isFullScreen()) {
         showNormal();
@@ -914,4 +906,14 @@ void MainWindow::pushButtonMVClicked()
     pixmap.loadFromData(getReply(tableWidget_playlist->item(row,5)->text()));
     navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
     pixmap.save(QDir::currentPath() + "/cover.jpg");
+}
+
+void MainWindow::seekBack()
+{
+    player->setPosition(player->position() - 5000);
+}
+
+void MainWindow::seekForward()
+{
+    player->setPosition(player->position() + 5000);
 }

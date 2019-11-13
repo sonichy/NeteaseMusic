@@ -118,7 +118,7 @@ void LyricWidget::paintEvent(QPaintEvent *event)
     QPainterPath path;
     path.addText(0, height()-20, font, text);    //歌词文字作为路径
     p.setBrush(color_left);             //文字填充色
-    //p.setPen(QColor(Qt::black));      //文字边框色
+    p.setPen(QColor(Qt::black));        //文字边框色
     p.setClipRegion(left);              //设置栽剪区域为以唱部分,Painter只在其中绘图
     p.drawPath(path);                   //画出左边歌词
     p.setBrush(color_right);            //字体填充色

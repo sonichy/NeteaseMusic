@@ -1,6 +1,5 @@
-#include "toplistitem.h"
-#include <QVBoxLayout>
-#include <QNetworkAccessManager>
+﻿#include "toplistitem.h"
+
 
 ToplistItem::ToplistItem(QWidget *parent) : QWidget(parent)
 {

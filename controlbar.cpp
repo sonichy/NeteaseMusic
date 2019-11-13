@@ -1,5 +1,5 @@
-#include "controlbar.h"
-#include <QHBoxLayout>
+﻿#include "controlbar.h"
+
 
 ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 {

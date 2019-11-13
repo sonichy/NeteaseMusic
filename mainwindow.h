@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include "titlebar.h"
@@ -14,6 +14,29 @@
 #include <QScrollArea>
 #include <QVideoWidget>
 #include <QSettings>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QEventLoop>
+#include <QHeaderView>
+#include <QDir>
+#include <QTextBlock>
+#include <QScrollBar>
+#include <QDialog>
+#include <QStandardPaths>
+#include <QFontDialog>
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QShortcut>
+#include <QDesktopServices>
 
 class MainWindow : public QMainWindow
 {
@@ -81,12 +104,15 @@ private slots:
     void chooseDownloadPath();
     void playLast();
     void playNext();
-    void enterFullscreen();
-    void exitFullscreen();
+    void enterExitFullScreen();
+    void enterFullScreen();
+    void exitFullScreen();
     void dialogDownload();
     void download(QString surl, QString filepath);
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
     void pushButtonMVClicked();
+    void seekBack();
+    void seekForward();
 };
 
 #endif // MAINWINDOW_H
