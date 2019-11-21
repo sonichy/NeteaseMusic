@@ -1,7 +1,7 @@
+//https://binaryify.github.io/NeteaseCloudMusicApi/
 #pragma execution_character_set("utf-8")
 #include "mainwindow.h"
 #include "toplistitem.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
