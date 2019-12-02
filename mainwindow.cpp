@@ -77,7 +77,9 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_playlist->setStyleSheet("QTableView::item:selected { color:white; background:rgb(22,22,22); }"
                                         "QTableCornerButton::section { background-color:#232326; }"
                                         "QHeaderView::section { color:white; background-color:#232326; }");
-    connect(tableWidget_playlist,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSong(int,int)));
+    connect(tableWidget_playlist, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(playSong(int,int)));
+    tableWidget_playlist->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(tableWidget_playlist, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(tableWidget_playlist_ContextMenu(QPoint)));
     vboxPL->addWidget(tableWidget_playlist);
     playlistWidget->setLayout(vboxPL);
     stackedWidget->addWidget(playlistWidget);
@@ -470,7 +472,7 @@ void MainWindow::preSearch()
 
 void MainWindow::search()
 {
-    if(titleBar->lineEdit_search->text()!=""){
+    if(titleBar->lineEdit_search->text() != ""){
         navWidget->listWidget->setCurrentRow(2);
         label_playlistTitle->setText("搜索：" + titleBar->lineEdit_search->text());
         int limit = 20;
@@ -778,7 +780,7 @@ void MainWindow::exitFullScreen()
 void MainWindow::dialogDownload()
 {
     QDialog *dialog = new QDialog(this);
-    dialog->setFixedWidth(200);
+    dialog->setFixedWidth(300);
     dialog->setWindowTitle("下载");
     dialog->setStyleSheet("QLineEdit { border:1px solid gray; }"
                           "QToolTip { border:1px solid black; background-color: black; }");
@@ -793,8 +795,11 @@ void MainWindow::dialogDownload()
     QLineEdit *lineEdit_url = new QLineEdit;
     lineEdit_url->setText(player->media().canonicalUrl().toString());
     gridLayout->addWidget(lineEdit_url,1,1,1,1);
-    label = new QLabel("保存路径");
-    gridLayout->addWidget(label,2,0,1,1);
+    //label = new QLabel("保存路径");
+    //gridLayout->addWidget(label,2,0,1,1);
+    QPushButton *pushButton_open = new QPushButton("保存路径");
+    pushButton_open->setFlat(true);
+    gridLayout->addWidget(pushButton_open,2,0,1,1);
     pushButton_path = new QPushButton;
     pushButton_path->setObjectName("DownloadDialogPath");
     pushButton_path->setFocusPolicy(Qt::NoFocus);
@@ -803,6 +808,9 @@ void MainWindow::dialogDownload()
     pushButton_path->setToolTip(downloadPath);
     connect(pushButton_path,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));
     gridLayout->addWidget(pushButton_path,2,1,1,1);
+    connect(pushButton_open, &QPushButton::pressed, [=](){
+         QDesktopServices::openUrl(QUrl(downloadPath));
+    });
     dialog->setLayout(gridLayout);
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch();
@@ -916,4 +924,23 @@ void MainWindow::seekBack()
 void MainWindow::seekForward()
 {
     player->setPosition(player->position() + 5000);
+}
+
+void MainWindow::tableWidget_playlist_ContextMenu(const QPoint &position)
+{
+    QAction *action_search;
+    QModelIndex index = tableWidget_playlist->indexAt(position);
+    QString text = index.data(Qt::DisplayRole).toString();
+    QList<QAction *> actions;
+    action_search = new QAction(this);
+    action_search->setText("搜索 \""+ text + "\" &S");
+    actions.append(action_search);
+    if(!index.isValid()){
+        action_search->setVisible(false);
+    }
+    QAction *result_action = QMenu::exec(actions, tableWidget_playlist->mapToGlobal(position));
+    if(result_action == action_search){
+        titleBar->lineEdit_search->setText(text);
+        preSearch();
+    }
 }

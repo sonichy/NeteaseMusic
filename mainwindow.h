@@ -113,6 +113,8 @@ private slots:
     void pushButtonMVClicked();
     void seekBack();
     void seekForward();
+    void tableWidget_playlist_ContextMenu(const QPoint &position);
+
 };
 
 #endif // MAINWINDOW_H
