@@ -788,15 +788,15 @@ void MainWindow::dialogDownload()
     QLabel *label = new QLabel("歌名");
     gridLayout->addWidget(label,0,0,1,1);
     QLineEdit *lineEdit_songname = new QLineEdit;
-    lineEdit_songname->setText(navWidget->label_songname->text().replace("\n"," - "));
     gridLayout->addWidget(lineEdit_songname,0,1,1,1);
     label = new QLabel("下载地址");
     gridLayout->addWidget(label,1,0,1,1);
     QLineEdit *lineEdit_url = new QLineEdit;
     lineEdit_url->setText(player->media().canonicalUrl().toString());
     gridLayout->addWidget(lineEdit_url,1,1,1,1);
-    //label = new QLabel("保存路径");
-    //gridLayout->addWidget(label,2,0,1,1);
+    QString suffix = QFileInfo(lineEdit_url->text()).suffix();
+    suffix = suffix.left(suffix.indexOf("?"));
+    lineEdit_songname->setText(navWidget->label_songname->text().replace("\n"," - ") + "." + suffix);
     QPushButton *pushButton_open = new QPushButton("保存路径");
     pushButton_open->setFlat(true);
     gridLayout->addWidget(pushButton_open,2,0,1,1);
@@ -824,7 +824,7 @@ void MainWindow::dialogDownload()
     gridLayout->addLayout(hbox,3,0,1,2);
     int result = dialog->exec();
     if (result == QDialog::Accepted) {
-        download(lineEdit_url->text(), pushButton_path->text() + "/" + lineEdit_songname->text() + "." + QFileInfo(lineEdit_url->text()).suffix());
+        download(lineEdit_url->text(), pushButton_path->text() + "/" + lineEdit_songname->text());
     } else if (result == QDialog::Rejected) {
         dialog->close();
     }
