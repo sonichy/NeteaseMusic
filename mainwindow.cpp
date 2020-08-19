@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *vboxPL = new QVBoxLayout;
     vboxPL->setMargin(0);
     label_playlistTitle = new QLabel;
-    label_playlistTitle->setFont(QFont("Timers",20,50));
+    label_playlistTitle->setFont(QFont("Timers", 20, 50));
     label_playlistTitle->setMargin(5);
     vboxPL->addWidget(label_playlistTitle);
     tableWidget_playlist = new QTableWidget;
@@ -167,6 +167,14 @@ MainWindow::MainWindow(QWidget *parent)
     if(downloadPath == ""){
         settings.setValue("DownloadPath", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).first());
     }
+
+    //信息泡泡
+    label_message = new QLabel;
+    QFont font = this->font();
+    font.setPointSize(20);
+    label_message->setFont(font);
+    label_message->setWindowFlags(Qt::FramelessWindowHint);
+    label_message->setStyleSheet("color:white; padding:10px; border:1px solid white; border-radius:20px; background-color:rgba(0,0,0,100); ");
 }
 
 MainWindow::~MainWindow()
@@ -196,8 +204,8 @@ void MainWindow::createWidgetToplist()
         toplistItem->setImage(coverImgUrl);
         toplistItem->id = list[i].toObject().value("id").toDouble();
         toplistItem->name = list[i].toObject().value("name").toString();
-        connect(toplistItem,SIGNAL(send(long,QString)),this,SLOT(createPlaylist(long,QString)));
-        gridLayout->addWidget(toplistItem,i/5,i%5);
+        connect(toplistItem, SIGNAL(send(long, QString)), this, SLOT(createPlaylist(long, QString)));
+        gridLayout->addWidget(toplistItem, i/5, i%5);
     }
 }
 
@@ -251,47 +259,60 @@ void MainWindow::showNormalMaximize()
 
 void MainWindow::createPlaylist(long id, QString name)
 {
-    navWidget->listWidget->setCurrentRow(2);
-    label_playlistTitle->setText(name);
-    tableWidget_playlist->setRowCount(0);
     qDebug() << id;
     QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
     qDebug() << surl;
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QJsonArray tracks = json.object().value("result").toObject().value("tracks").toArray();
-    //qDebug() << tracks;
-    for(int i=0; i<tracks.size(); i++){
-        tableWidget_playlist->insertRow(i);
-        tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
-        QJsonArray artists = tracks[i].toObject().value("artists").toArray();
-        QString sartists = "";
-        for(int a=0; a<artists.size(); a++){
-            sartists += artists[a].toObject().value("name").toString();
-            if(a<artists.size()-1) sartists += ",";
+    QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
+    qDebug() << JD;
+    int code = JD.object().value("code").toInt();
+    qDebug() << code;
+    if (code == 200) {
+        tableWidget_playlist->setRowCount(0);
+        QJsonArray tracks = JD.object().value("result").toObject().value("tracks").toArray();
+        //qDebug() << tracks;
+        for (int i=0; i<tracks.size(); i++) {
+            tableWidget_playlist->insertRow(i);
+            tableWidget_playlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
+            QJsonArray artists = tracks[i].toObject().value("artists").toArray();
+            QString sartists = "";
+            for(int a=0; a<artists.size(); a++){
+                sartists += artists[a].toObject().value("name").toString();
+                if(a<artists.size()-1) sartists += ",";
+            }
+            tableWidget_playlist->setItem(i,1,new QTableWidgetItem(sartists));
+            tableWidget_playlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
+            int ds = tracks[i].toObject().value("duration").toInt()/1000;
+            QTableWidgetItem *TWI = new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0')));
+            TWI->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            tableWidget_playlist->setItem(i, 3, TWI);
+            tableWidget_playlist->setItem(i, 4, new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
+            tableWidget_playlist->setItem(i,5,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("picUrl").toString()));
+            int mvid = tracks[i].toObject().value("mvid").toInt();
+            tableWidget_playlist->setItem(i, 6, new QTableWidgetItem(QString::number(mvid)));
+            if(mvid != 0){
+                QPushButton *pushButton_MV = new QPushButton;
+                pushButton_MV->setFixedSize(24,24);
+                pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
+                pushButton_MV->setIconSize(QSize(24, 24));
+                pushButton_MV->setFocusPolicy(Qt::NoFocus);
+                pushButton_MV->setFlat(true);
+                pushButton_MV->setCursor(Qt::PointingHandCursor);
+                connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
+                tableWidget_playlist->setCellWidget(i, 7, pushButton_MV);
+            }
         }
-        tableWidget_playlist->setItem(i,1,new QTableWidgetItem(sartists));
-        tableWidget_playlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
-        int ds = tracks[i].toObject().value("duration").toInt()/1000;
-        QTableWidgetItem *TWI = new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0')));
-        TWI->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        tableWidget_playlist->setItem(i,3,TWI);
-        tableWidget_playlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
-        tableWidget_playlist->setItem(i,5,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("picUrl").toString()));
-        int mvid = tracks[i].toObject().value("mvid").toInt();
-        tableWidget_playlist->setItem(i,6,new QTableWidgetItem(QString::number(mvid)));
-        if(mvid != 0){
-            QPushButton *pushButton_MV = new QPushButton;
-            pushButton_MV->setFixedSize(24,24);
-            pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
-            pushButton_MV->setIconSize(QSize(24,24));
-            pushButton_MV->setFocusPolicy(Qt::NoFocus);
-            pushButton_MV->setFlat(true);
-            pushButton_MV->setCursor(Qt::PointingHandCursor);
-            connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
-            tableWidget_playlist->setCellWidget(i,7,pushButton_MV);
-        }
+        tableWidget_playlist->resizeColumnsToContents();
+        navWidget->listWidget->setCurrentRow(2);
+        label_playlistTitle->setText(name);
+    } else {
+        QString message = JD.object().value("message").toString();
+        label_message->setText(message);
+        label_message->move(x() + width()/2 - label_message->width()/2, y() + height()/2 - label_message->height()/2);
+        label_message->show();
+        QTimer::singleShot(5000, this, [=]{
+            label_message->hide();
+        });
     }
-    tableWidget_playlist->resizeColumnsToContents();
 }
 
 void MainWindow::playSong(int row, int column)
@@ -303,7 +324,7 @@ void MainWindow::playSong(int row, int column)
     qDebug() << surl;
     player->setMedia(QUrl(surl));
     player->play();
-    navWidget->label_songname->setText(tableWidget_playlist->item(row,0)->text() + "\n" + tableWidget_playlist->item(row,1)->text());
+    navWidget->label_songname->setText(tableWidget_playlist->item(row, 0)->text() + "\n" + tableWidget_playlist->item(row, 1)->text());
     lyricWidget->text = tableWidget_playlist->item(row,0)->text() + " - " + tableWidget_playlist->item(row,1)->text();
     lyricWidget->update();
     getLyric(id);

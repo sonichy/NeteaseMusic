@@ -37,6 +37,7 @@
 #include <QFileDialog>
 #include <QShortcut>
 #include <QDesktopServices>
+#include <QTimer>
 
 class MainWindow : public QMainWindow
 {
@@ -47,7 +48,7 @@ public:
     ~MainWindow();
 
 private:
-    QLabel *label_titleBar_bottom;
+    QLabel *label_titleBar_bottom, *label_message;
     TitleBar *titleBar;
     NavWidget *navWidget;
     QStackedWidget *stackedWidget;

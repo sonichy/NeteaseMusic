@@ -11,7 +11,7 @@ ToplistItem::ToplistItem(QWidget *parent) : QWidget(parent)
     pushButton->setFlat(true);
     pushButton->setIconSize(pushButton->size());
     pushButton->setCursor(Qt::PointingHandCursor);
-    connect(pushButton,SIGNAL(pressed()),this,SLOT(itemPressed()));
+    connect(pushButton, SIGNAL(pressed()), this, SLOT(itemPressed()));
     vbox->addWidget(pushButton);
     setLayout(vbox);
 }
