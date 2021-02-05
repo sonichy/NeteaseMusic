@@ -1,7 +1,4 @@
-//https://binaryify.github.io/NeteaseCloudMusicApi/
-#pragma execution_character_set("utf-8")
 #include "mainwindow.h"
-#include "toplistitem.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -157,7 +154,7 @@ MainWindow::MainWindow(QWidget *parent)
         QFont font = qApp->font();
         font.setPointSize(40);
         lyricWidget->font = font;
-        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
+        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + QString::number(font.weight()) + "," + font.italic();
         settings.setValue("Font", sfont);
     } else {
         QStringList SLFont = sfont.split(",");
@@ -193,19 +190,26 @@ void MainWindow::createWidgetToplist()
     rankScrollArea->setWidget(toplistWidget);
     rankScrollArea->setWidgetResizable(true);   //关键语句
     QGridLayout *gridLayout = new QGridLayout(toplistWidget);
+    gridLayout->setSpacing(40);
     QString surl = "http://music.163.com/api/toplist";
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
+    QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     qDebug() << surl;
-    QJsonArray list = json.object().value("list").toArray();
+    QJsonArray JA_list = JD.object().value("list").toArray();
     //qDebug() << list;
-    for (int i=0; i< list.size(); i++) {
-        QString coverImgUrl = list[i].toObject().value("coverImgUrl").toString();
-        ToplistItem *toplistItem = new ToplistItem;
-        toplistItem->setImage(coverImgUrl);
-        toplistItem->id = list[i].toObject().value("id").toDouble();
-        toplistItem->name = list[i].toObject().value("name").toString();
-        connect(toplistItem, SIGNAL(send(long, QString)), this, SLOT(createPlaylist(long, QString)));
-        gridLayout->addWidget(toplistItem, i/5, i%5);
+    for (int i=0; i< JA_list.size(); i++) {
+        QString coverImgUrl = JA_list[i].toObject().value("coverImgUrl").toString();
+        double id = JA_list[i].toObject().value("id").toDouble();
+        QString name = JA_list[i].toObject().value("name").toString();
+        QPushButton *pushButton = new QPushButton(this);
+        pushButton->setFixedSize(120,120);
+        pushButton->setIconSize(QSize(120,120));
+        pushButton->setFlat(true);
+        pushButton->setCursor(Qt::PointingHandCursor);
+        gridLayout->addWidget(pushButton, i/5, i%5);
+        getToplistImg(coverImgUrl, pushButton);
+        connect(pushButton, &QPushButton::clicked, [=]{
+            createPlaylist(id, name);
+        });
     }
 }
 
@@ -257,10 +261,9 @@ void MainWindow::showNormalMaximize()
     }
 }
 
-void MainWindow::createPlaylist(long id, QString name)
+void MainWindow::createPlaylist(double id, QString name)
 {
-    qDebug() << id;
-    QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
+    QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id, 0, 'f', 0);
     qDebug() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     //qDebug() << JD;
@@ -268,6 +271,7 @@ void MainWindow::createPlaylist(long id, QString name)
     qDebug() << code;
     if (code == 200) {
         tableWidget_playlist->setRowCount(0);
+        tableWidget_playlist->scrollToTop();
         QJsonArray tracks = JD.object().value("result").toObject().value("tracks").toArray();
         //qDebug() << tracks;
         for (int i=0; i<tracks.size(); i++) {
@@ -337,18 +341,18 @@ void MainWindow::playSong(int row, int column)
 
 void MainWindow::durationChange(qint64 d)
 {
-    controlBar->slider_progress->setMaximum(d);
+    controlBar->slider_progress->setMaximum(static_cast<int>(d));
     QTime t(0,0,0);
-    t = t.addMSecs(d);
+    t = t.addMSecs(static_cast<int>(d));
     controlBar->label_song_duration->setText(t.toString("mm:ss"));
 }
 
 void MainWindow::positionChange(qint64 p)
 {
     //qDebug() << "position =" << p;
-    if(!controlBar->slider_progress->isSliderDown())controlBar->slider_progress->setValue(p);
+    if(!controlBar->slider_progress->isSliderDown())controlBar->slider_progress->setValue(static_cast<int>(p));
     QTime t(0,0,0);
-    t = t.addMSecs(p);
+    t = t.addMSecs(static_cast<int>(p));
     controlBar->label_song_timeNow->setText(t.toString("mm:ss"));
 
     // 歌词选行
@@ -357,7 +361,7 @@ void MainWindow::positionChange(qint64 p)
     for (int i=0; i<lyrics.size()-1; i++) {
         if (t>lyrics.at(i).time && t<lyrics.at(i+1).time) {
             lyricWidget->text = lyrics.at(i).sentence;
-            lyricWidget->lp = (float)(lyrics.at(i).time.msecsTo(t)) / lyrics.at(i).time.msecsTo(lyrics.at(i+1).time);
+            lyricWidget->lp = static_cast<float>(lyrics.at(i).time.msecsTo(t)) / lyrics.at(i).time.msecsTo(lyrics.at(i+1).time);
             //qDebug() << lyrics.at(i).time.msecsTo(t) << lyrics.at(i).time.msecsTo(lyrics.at(i+1).time) << lyricWidget->lp;
 //            QFontMetrics FM(lyricWidget->font);
 //            if(FM.boundingRect(lyricWidget->text).width() > lyricWidget->width()){
@@ -639,7 +643,7 @@ void MainWindow::dialogSet()
     label->setAlignment(Qt::AlignCenter);
     gridLayout->addWidget(label,0,0,1,1);
     pushButton_font = new QPushButton;
-    QString sfont = lyricWidget->font.family() + "," + QString::number(lyricWidget->font.pointSize()) + "," + lyricWidget->font.weight() + "," + lyricWidget->font.italic();
+    QString sfont = lyricWidget->font.family() + "," + QString::number(lyricWidget->font.pointSize()) + "," + QString::number(lyricWidget->font.weight()) + "," + lyricWidget->font.italic();
     pushButton_font->setText(sfont);
     pushButton_font->setFocusPolicy(Qt::NoFocus);
     connect(pushButton_font,SIGNAL(pressed()),this,SLOT(chooseFont()));
@@ -695,7 +699,7 @@ void MainWindow::chooseFont()
        QFontMetrics FM(font);
        lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,30));
        lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, lyricWidget->y());
-       QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
+       QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + QString::number(font.weight()) + "," + font.italic();
        pushButton_font->setText(sfont);
        settings.setValue("Font", sfont);
     }
@@ -903,11 +907,11 @@ void MainWindow::download(QString surl, QString filepath)
 void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     controlBar->pushButton_download->setText(QString("%1%").arg(bytesReceived*100/bytesTotal));
-    float p = (float)bytesReceived/bytesTotal;
+    double p = static_cast<double>(bytesReceived) / bytesTotal;
     controlBar->pushButton_download->setStyleSheet(QString("QPushButton { background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0,"
                                                    "stop:0 rgba(48, 194, 124, 255), stop:%1 rgba(48, 194, 124, 255),"
                                                    "stop:%2 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255)); }")
-                                      .arg(p-0.001)
+                                      .arg(p - 0.001)
                                       .arg(p));
     qDebug() << p << controlBar->pushButton_download->styleSheet();
 }
@@ -983,4 +987,19 @@ void MainWindow::tableWidget_playlist_ContextMenu(const QPoint &position)
         titleBar->lineEdit_search->setText(text);
         preSearch();
     }
+}
+
+void MainWindow::getToplistImg(QString coverImgUrl, QPushButton *pushButton)
+{    
+    QNetworkAccessManager *NAM = new QNetworkAccessManager;
+    QNetworkRequest request;
+    request.setUrl(QUrl(coverImgUrl));
+    QNetworkReply *reply = NAM->get(request);
+    connect(reply, &QNetworkReply::finished, [=]{
+        QPixmap pixmap;
+        pixmap.loadFromData(reply->readAll());
+        pixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if (pushButton)
+            pushButton->setIcon(QIcon(pixmap));
+    });
 }

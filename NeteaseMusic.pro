@@ -11,7 +11,6 @@ SOURCES += \
     titlebar.cpp \
     controlbar.cpp \
     navwidget.cpp \
-    toplistitem.cpp \
     lyricwidget.cpp
 
 HEADERS += \
@@ -19,7 +18,6 @@ HEADERS += \
     titlebar.h \
     controlbar.h \
     navwidget.h \
-    toplistitem.h \
     lyricwidget.h
 
 RESOURCES += \

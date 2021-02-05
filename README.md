@@ -16,6 +16,7 @@
 ### 参考
 UI：网易云音乐  
 API：  
+https://binaryify.github.io/NeteaseCloudMusicApi  
 https://github.com/gcmwhite/CloudMusic-Bc-5  
 http://get.ftqq.com/7430.get  
 https://github.com/metowolf/NeteaseCloudMusicApi

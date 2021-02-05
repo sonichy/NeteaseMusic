@@ -76,11 +76,12 @@ private:
     QPushButton *pushButton_font, *pushButton_fontcolorleft, *pushButton_fontcolorright, *pushButton_path;
     QVideoWidget *videoWidget;
     QSettings settings;
+    void getToplistImg(QString coverImgUrl, QPushButton *pushButton);
 
 private slots:
     void showNormalMaximize();
     void moveMe(QPoint point);
-    void createPlaylist(long id, QString name);
+    void createPlaylist(double id, QString name);
     void playSong(int,int);
     void durationChange(qint64 d);
     void positionChange(qint64 p);
