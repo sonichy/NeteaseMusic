@@ -563,7 +563,7 @@ void MainWindow::lastPage()
 void MainWindow::nextPage()
 {
     int page = titleBar->lineEdit_page->text().toInt();
-    if(page < 99){
+    if (page < 99) {
         titleBar->lineEdit_page->setText(QString::number(page+1));
         search();
     }
@@ -996,10 +996,11 @@ void MainWindow::getToplistImg(QString coverImgUrl, QPushButton *pushButton)
     request.setUrl(QUrl(coverImgUrl));
     QNetworkReply *reply = NAM->get(request);
     connect(reply, &QNetworkReply::finished, [=]{
-        QPixmap pixmap;
-        pixmap.loadFromData(reply->readAll());
-        pixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        if (pushButton)
+        if (pushButton) {
+            QPixmap pixmap;
+            pixmap.loadFromData(reply->readAll());
+            pixmap = pixmap.scaled(pushButton->iconSize(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             pushButton->setIcon(QIcon(pixmap));
+        }
     });
 }
