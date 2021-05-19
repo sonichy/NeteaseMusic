@@ -1,6 +1,5 @@
 ﻿#include "controlbar.h"
 
-
 ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("QSlider::sub-page:Horizontal { background-color: #9F2425; }"
@@ -77,7 +76,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     slider_volume = new QSlider;
     slider_volume->setOrientation(Qt::Horizontal);
     slider_volume->setRange(0,100);
-    slider_volume->setValue(100);
+    //slider_volume->setValue(100);
     slider_volume->setFixedWidth(100);
     slider_volume->setFocusPolicy(Qt::NoFocus);
     //slider_volume->setCursor(Qt::PointingHandCursor);

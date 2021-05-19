@@ -44,8 +44,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private:
     QLabel *label_titleBar_bottom, *label_message;
@@ -77,6 +80,7 @@ private:
     QVideoWidget *videoWidget;
     QSettings settings;
     void getToplistImg(QString coverImgUrl, QPushButton *pushButton);
+    Qt::WindowState winState;
 
 private slots:
     void showNormalMaximize();
@@ -116,7 +120,6 @@ private slots:
     void seekBack();
     void seekForward();
     void tableWidget_playlist_ContextMenu(const QPoint &position);
-
 };
 
 #endif // MAINWINDOW_H

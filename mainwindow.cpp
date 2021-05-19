@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     setStyleSheet("color:white; background-color:#232326;");
     connect(new QShortcut(QKeySequence(Qt::Key_Space),this), SIGNAL(activated()), this, SLOT(playPause()));
     connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()), this, SLOT(exitFullScreen()));
-    connect(new QShortcut(QKeySequence(Qt::Key_F),this), SIGNAL(activated()), this, SLOT(enterExitFullScreen()));
+    connect(new QShortcut(QKeySequence(Qt::Key_F11),this), SIGNAL(activated()), this, SLOT(enterExitFullScreen()));
     connect(new QShortcut(QKeySequence(Qt::Key_Left),this), SIGNAL(activated()), this, SLOT(seekBack()));
     connect(new QShortcut(QKeySequence(Qt::Key_Right),this), SIGNAL(activated()), this, SLOT(seekForward()));
 
@@ -84,7 +84,6 @@ MainWindow::MainWindow(QWidget *parent)
     songWidget = new QWidget;
     QVBoxLayout *vboxs = new QVBoxLayout;
     textBrowser = new QTextBrowser;
-    textBrowser->zoomIn(10);
     vboxs->addWidget(textBrowser);
     songWidget->setLayout(vboxs);
     stackedWidget->addWidget(songWidget);
@@ -97,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
+    controlBar->slider_volume->setValue(settings.value("Volume",100).toInt());
     connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
     connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
     connect(controlBar->pushButton_next, SIGNAL(pressed()), this, SLOT(playNext()));
@@ -116,18 +116,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player, SIGNAL(volumeChanged(int)), this, SLOT(volumeChange(int)));
     //connect(player, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), SLOT(stateChange(QMediaPlayer::State)));
-    QString vol = settings.value("Volume").toString();
-    if (vol == "") vol = "100";
-    player->setVolume(vol.toInt());
+//    QString vol = settings.value("Volume").toString();
+//    if (vol == "") vol = "100";
+//    player->setVolume(vol.toInt());
 
     lyricWidget = new LyricWidget;
     connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(dialogSet()));
     connect(lyricWidget->pushButton_close,SIGNAL(pressed()),this,SLOT(hideLyric()));
     QString slx =  settings.value("LyricX").toString();
     QString sly =  settings.value("LyricY").toString();
-    if(slx=="" || sly=="" || slx.toInt()>QApplication::desktop()->width() || sly.toInt()>QApplication::desktop()->height()){
+    if (slx=="" || sly=="" || slx.toInt()>QApplication::desktop()->width() || sly.toInt()>QApplication::desktop()->height()) {
         lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, QApplication::desktop()->height()-lyricWidget->height());
-    }else{
+    } else {
         lyricWidget->move(slx.toInt(),sly.toInt());
     }
     //qDebug() << "歌词坐标" << slx << sly;
@@ -135,30 +135,30 @@ MainWindow::MainWindow(QWidget *parent)
     //qDebug() << "lyricShow" << lyricShow;
     if (lyricShow == "") {
         settings.setValue("LyricShow", "true");
-    }else{
-        if(lyricShow == "true"){
+    } else {
+        if (lyricShow == "true") {
             showHideLyric(true);
-        }else{
+        } else {
             showHideLyric(false);
         }
     }
 
-    QString SColorLeft =  settings.value("LyricFontColorLeft").toString();
-    if(SColorLeft == "") SColorLeft = "#FF0000";
+    QString SColorLeft =  settings.value("LyricFontColorLeft", "#FF0000").toString();
     lyricWidget->color_left = QColor(SColorLeft);
-    QString SColorRight =  settings.value("LyricFontColorRight").toString();
-    if(SColorRight == "") SColorRight = "#00FF00";
+    QString SColorRight =  settings.value("LyricFontColorRight", "#00FF00").toString();
     lyricWidget->color_right = QColor(SColorRight);
     QString sfont =  settings.value("Font").toString();
     if (sfont == "") {
         QFont font = qApp->font();
         font.setPointSize(40);
-        lyricWidget->font = font;
+        lyricWidget->font = font;        
         QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + QString::number(font.weight()) + "," + font.italic();
         settings.setValue("Font", sfont);
     } else {
         QStringList SLFont = sfont.split(",");
-        lyricWidget->font = QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
+        QFont font(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt());
+        lyricWidget->font = font;
+        textBrowser->setFont(font);
     }
     downloadPath =  settings.value("DownloadPath").toString();
     if (downloadPath == "") {
@@ -245,16 +245,14 @@ QByteArray MainWindow::postReply(QString surl,QString spost)
 
 void MainWindow::showNormalMaximize()
 {
-    //qDebug() << "isMaximized=" << isMaximized();
-    if(isMaximized()){
+    //qDebug() << "isMaximized=" << isMaximized();    
+    if (isMaximized()) {
         showNormal();
-        //titleBar->pushButton_maximize->setIcon(QIcon(":/icon/maximize.svg"));
         titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/icon/maximize.svg); }"
-                                                     "QPushButton:hover { border-image: url(:/maximize_hover.svg); }"
-                                                     "QPushButton:pressed { border-image: url(:/maximize.svg); }");
-    }else{
+                                                     "QPushButton:hover { border-image: url(:icon/maximize_hover.svg); }"
+                                                     "QPushButton:pressed { border-image: url(:icon/maximize.svg); }");
+    } else {
         showMaximized();
-        //titleBar->pushButton_maximize->setIcon(QIcon(":/icon/normal.svg"));
         titleBar->pushButton_maximize->setStyleSheet("QPushButton { border-image: url(:/icon/normal.svg); }"
                                                      "QPushButton:hover { border-image: url(:/icon/normal_hover.svg); }"
                                                      "QPushButton:pressed { border-image: url(:/icon/normal.svg); }");
@@ -407,7 +405,8 @@ void MainWindow::positionChange(qint64 p)
 
 void MainWindow::volumeChange(int v)
 {
-    if(!controlBar->slider_volume->isSliderDown()) controlBar->slider_volume->setValue(v);
+    if (!controlBar->slider_volume->isSliderDown())
+        controlBar->slider_volume->setValue(v);
     controlBar->slider_volume->setToolTip(QString::number(v));
 }
 
@@ -472,16 +471,15 @@ void MainWindow::sliderProgressMoved(int p)
 void MainWindow::sliderVolumeMoved(int v)
 {
     player->setVolume(v);
-    settings.setValue("Volume", v);
 }
 
 void MainWindow::mute()
 {
-    if(player->isMuted()){
+    if (player->isMuted()) {
         player->setMuted(false);
         controlBar->pushButton_mute->setIcon(QIcon(":/icon/volume.svg"));
         controlBar->slider_volume->setValue(volume);
-    }else{
+    } else {
         volume = player->volume();
         player->setMuted(true);
         controlBar->pushButton_mute->setIcon(QIcon(":/icon/mute.svg"));
@@ -696,6 +694,7 @@ void MainWindow::chooseFont()
     QFont font = QFontDialog::getFont(&ok, lyricWidget->font, this, "选择字体");
     if (ok) {
        lyricWidget->font = font;
+       textBrowser->setFont(font);
        QFontMetrics FM(font);
        lyricWidget->resize(FM.boundingRect(lyricWidget->text).size() + QSize(20,30));
        lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, lyricWidget->y());
@@ -792,6 +791,8 @@ void MainWindow::enterFullScreen()
 {
     if (navRow==3 || navRow==10) {
         if (!isFullScreen()) {
+            //winState = windowState();
+            //qDebug() << winState;
             showFullScreen();
             titleBar->hide();
             label_titleBar_bottom->hide();
@@ -806,6 +807,11 @@ void MainWindow::exitFullScreen()
 {
     if (isFullScreen()) {
         showNormal();
+        //restoreState(winState);
+//        if (winState == Qt::WindowNoState)
+//            showNormal();
+//        else if (winState == Qt::WindowMaximized)
+//            showMaximized();
         titleBar->show();
         label_titleBar_bottom->show();
         navWidget->show();
@@ -1003,4 +1009,10 @@ void MainWindow::getToplistImg(QString coverImgUrl, QPushButton *pushButton)
             pushButton->setIcon(QIcon(pixmap));
         }
     });
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    settings.setValue("Volume", player->volume());
+    QMainWindow::closeEvent(event);
 }

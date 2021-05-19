@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QPainterPath>
 
 LyricWidget::LyricWidget(QWidget *parent)
     : QWidget(parent),
@@ -108,13 +109,13 @@ void LyricWidget::paintEvent(QPaintEvent *event)
 
     // 自适应宽度
     QFontMetrics FM(font);
-    if(FM.boundingRect(text).width() > width()){
+    if (FM.boundingRect(text).width() > width()) {
         resize(FM.boundingRect(text).size() + QSize(20,30));
     }
 
     // 根据字体计算歌词宽度
-    QRegion left(0, 30, FM.boundingRect(text).width()*lp, height());            //左边唱过的区域
-    QRegion right(FM.boundingRect(text).width()*lp, 30, width(), height());     //右边未唱过的区域
+    QRegion left(0, 30, static_cast<int>(FM.boundingRect(text).width() * lp), height());            //左边唱过的区域
+    QRegion right(static_cast<int>(FM.boundingRect(text).width() * lp), 30, width(), height());     //右边未唱过的区域
     QPainterPath path;
     path.addText(0, height()-20, font, text);    //歌词文字作为路径
     p.setBrush(color_left);             //文字填充色
